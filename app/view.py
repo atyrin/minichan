@@ -2,6 +2,7 @@ from time import time
 from datetime import datetime
 import hashlib
 import html
+import re
 
 from flask import request, redirect, render_template, make_response
 
@@ -139,10 +140,14 @@ def next_counter():
 	
 def ConvertTextToSpanClass( Text, ClassName ):
     Text = Text.replace(("["+ClassName+"]"), "<span class=\""+ ClassName + "\">")
-    Text = Text.replace(("[/"+ClassName+"]"), "</span>" )
+    Text = Text.replace(("[/"+ClassName+"]"), "</span>" ) #TO DO:Replace with regex
     return Text
+		
+def FormatLinks(Text):
+    return re.sub(r"\[link\](.*)\[\/link\]",r'<a href="\1">\1</a>',Text)
 
 def FormatText(Text, SpanClasses):
     for SpanClass in SpanClasses:
         Text = ConvertTextToSpanClass(Text, SpanClass)
+    Text = FormatLinks(Text)
     return Text

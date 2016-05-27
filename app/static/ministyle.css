@@ -189,18 +189,6 @@ textarea:focus {
 	}
 }
 
-.paragraph  > .spoiler{ 
-  color: black; 
-  background-color:black;
-}
-
-.paragraph  > .spoiler:hover{
-  color: white;
-  }
-  
-.paragraph  > .strong{
-    font-weight: bold;
-}
 
 @media only screen and (min-width: 64.063em) {
 	.post {
@@ -294,4 +282,33 @@ div.ml_box.animated {
 .animated {
     -webkit-animation-duration: 0.5s;
     animation-duration: 0.5s;
+}
+
+.paragraph .spoiler{ 
+  color: black; 
+  background-color:black;
+}
+
+.paragraph .spoiler:hover{
+  color: white;
+  }
+  
+.paragraph .strong{
+    font-weight: bold;
+}
+
+.paragraph .italic{
+    font-style: italic;
+}
+
+.paragraph .strikethrough{
+    text-decoration: line-through;
+}
+
+.paragraph .underline{
+    text-decoration: underline;
+}
+
+.paragraph .highlight{
+    background-color:yellow;
 }
