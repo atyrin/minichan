@@ -1,35 +1,45 @@
 <!DOCTYPE html>
 <html>
+<script type="text/javascript"> (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter37048260 = new Ya.Metrika({ id:37048260, clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks"); </script> <noscript><div><img src="https://mc.yandex.ru/watch/37048260" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 <head>
-	<title>Random</title>
+	<title>Veeamchan</title>
+	<link rel="shortcut icon" href="static/favicon.png" type="image/png">
 	<meta charset="utf-8" />
 	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
 	<link rel="stylesheet" href="static/ministyle.css" />
 </head>
 <body>
-
+<!--Здарова, а чего в исходники полез? Сдеанонить кого решил?-->
+<center><b>Добро пожаловать. Снова.</b><center>
+</br>
+<a onclick="window.scrollTo(0,document.body.scrollHeight);return false;" href="#">New thread</a>
+</br>
+{% if data: %}
+{% for thread in data %}
+<article class="post clear">
+	<a href="{{thread["post_id"]}}" target="_blank"><img src="/thumb/{{thread["image_id"]}}" class="image"></a>
+	<h3 class="header"><a href="/{{thread["post_id"]}}">#{{thread["post_id"]}}: {{thread["subject"]}}</a>
+	<span class="post-id"><a href="{{thread["post_id"]}}"><span class="counter">{{thread["bump_counter"]}} </span><i class="fa fa-comment"></i></a></span></h3>
+	{% autoescape false %}
+	<p class="paragraph">{{thread["body"]}}</p>
+	{% endautoescape %}
+</article>
+{% endfor %}
+{% endif %}
+<center>Треад<center>
 <form action="/" method="post" enctype="multipart/form-data" id="form">
 	<input type="text" name="subject" class="input-subject" maxlength="20" />
-	<textarea type="text" rows="6" name="body" maxlength="1000"></textarea>
+	<textarea type="text" rows="6" name="body" placeholder="место для псто" maxlength="1000"></textarea>
 	<div class="button-group clear">
 		<div class="file-input-wrapper">
 			<button class="btn-file-input">Image</button>
 			<input type="file" name="file" />
 		</div>
-		<button type="submit" class="submit-button">Make thread</button>
+		<button type="submit" class="submit-button">Create thread</button>
 	</div>
 </form>
-<br>
+<center>Анон (с). 2016<center>
 
-{% if data: %}
-{% for thread in data %}
-<article class="post clear">
-	<a href="/image/{{thread["image_id"]}}" target="_blank"><img src="/thumb/{{thread["image_id"]}}" class="image"></a>
-	<h3 class="header">#{{thread["post_id"]}}: {{thread["subject"]}}
-	<span class="post-id"><a href="{{thread["post_id"]}}"><span class="counter">{{thread["bump_counter"]}} </span><i class="fa fa-comment"></i></a></span></h3>
-	<p class="paragraph">{{thread["body"]}}</p>
-</article>
-{% endfor %}
-{% endif %}
 </body>
+
 </html>

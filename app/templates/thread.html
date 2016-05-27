@@ -1,16 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Random</title>
+	<title>VeeamChan</title>
+	<link rel="shortcut icon" href="static/favicon.png" type="image/png">
 	<meta charset="utf-8" />
 	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
 	<link rel="stylesheet" href="static/ministyle.css" />
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdn.rawgit.com/IonicaBizau/mini-lightbox/master/dist/mini-lightbox.min.js"></script>
+
 </head>
 <body>
+<!--Здарова, а чего в исходники полез? Сдеанонить кого решил?-->
+<center><b><a title="А ты придор">Вимач — сила. Двач — могила<a></b></center>
+</br>
+<a href="../" title="На хуявную">< На главную</a>
+</br>
+<a onclick="window.scrollTo(0,document.body.scrollHeight);return false;" href="#" title="Хуиз">Вниз</a>
+</br>
 
 <form action="/{{data["original_post"]["post_id"]}}" method="post" enctype="multipart/form-data" id="form">
-	<input type="text" name="subject" class="input-subject" disabled="disabled" />
+	<input type="text" name="subject" placeholder="sage" class="input-subject"/>
 	<textarea type="text" rows="6" name="body" id="body" maxlength="1000" required></textarea>
 	<div class="button-group clear">
 		<div class="file-input-wrapper">
@@ -23,10 +33,13 @@
 <br>
 
 <article class="post clear" id="{{data["original_post"]["post_id"]}}">
-	<a href="/image/{{data["original_post"]["image_id"]}}" target="_blank"><img src="/thumb/{{data["original_post"]["image_id"]}}" class="image"></a>
-	<h3 class="header">#{{data["original_post"]["post_id"]}}: Lorem ipsum
+	<!--<a href="/image/{{data["original_post"]["image_id"]}}" target="_blank"></a>-->
+        <img data-image-opened="/image/{{data["original_post"]["image_id"]}}" src="/thumb/{{data["original_post"]["image_id"]}}" class="image" alt="">
+	<h3 class="header">#{{data["original_post"]["post_id"]}}: {{data["original_post"]["subject"]}}
 	<span class="post-id"><a href="" name="{{data["original_post"]["post_id"]}}" data-text="&gt;&gt;{{data["original_post"]["post_id"]}}"><i class="fa fa-share"><span class="counter"></span></i></a></span></h3>
+	{% autoescape false %}
 	<p class="paragraph">{{data["original_post"]["body"]}}</p>
+	{% endautoescape %}
 </article>
 
 <div class="comments">
@@ -34,15 +47,20 @@
 {% for reply in data["reply_list"]: %}
 <article class="post clear" id="{{reply["post_id"]}}">
 {% if "image_id" in reply: %}
-<a href="/image/{{reply["image_id"]}}"><img src="/thumb/{{reply["image_id"]}}" class="image"></a>
+<div>
+<!--<a href="/image/{{reply["image_id"]}}">qqq</a>-->
+<img data-image-opened="/image/{{reply["image_id"]}}" src="/thumb/{{reply["image_id"]}}" class="image">
+</div>
 {% endif %}
 <h3 class="header">#{{reply["post_id"]}}
 	<span class="post-id"><a href="" name="{{reply["post_id"]}}" data-text="&gt;&gt;{{reply["post_id"]}}"><i class="fa fa-share"><span class="counter"></span></i></a></span></h3>
+	{% autoescape false %}
 	<p class="paragraph">
 	{% for string in reply["body"].split("\n"): %}
 	{% for word in string.split(" "): %}
-	{% if word.startswith(">>") and word[2:].isdigit:%}
-	<a href="/{{data["original_post"]["post_id"]}}#{{word[2:]}}">&gt;&gt;{{word[2:]}} </a>
+	{% set NormalizedWord = word | replace ("&gt;&gt;",">>")%}
+	{% if NormalizedWord.startswith(">>") and NormalizedWord[2:].isdigit:%}
+	<a href="/{{data["original_post"]["post_id"]}}#{{NormalizedWord[2:]}}">&gt;&gt;{{NormalizedWord[2:]}} </a>
 	{% else: %}
 	{{word + " "}}
 	{% endif %}
@@ -50,15 +68,33 @@
 	<br>
 	{% endfor %}
 	</p>
+	{% endautoescape %}
 </article>
 {% endfor %}
 {% endif %}
 </div>
 
-  <script>$("a[data-text]").click(function(){
+
+  <script>
+
+window.onload = function (){
+MiniLightbox(".image");
+}
+
+$("a[data-text]").click(function(){
   var value = $("#body").val();
    $("#body").val(value+$(this).attr("data-text"));
-   return false;
-})</script>
+   var url = location.href;               
+   location.href = "#body";
+   history.replaceState(null,null,url);
+   return false;}
+)
+
+</script>
+<a onclick="window.scrollTo(0,document.body.scrolltop);return false;" href="#">Вверх</a>
+</br>
+<a name="footer" href="../">На главную</a>
+</br>
 </body>
+<script type="text/javascript"> (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter37048260 = new Ya.Metrika({ id:37048260, clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks"); </script> <noscript><div><img src="https://mc.yandex.ru/watch/37048260" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 </html>

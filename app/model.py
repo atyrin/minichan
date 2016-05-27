@@ -28,13 +28,15 @@ class Reply(Post):
     thread_link = ReferenceField(Thread, reverse_delete_rule=CASCADE, required=True)
     @queryset_manager
     def all(doc_cls, queryset):
-        return queryset.order_by('creation_time').only('post_id', 'creation_time',
+        return queryset.order_by('post_id').only('post_id', 'creation_time',
             'body', 'image_id')
 
 
 class Image(Document):
     img_id = StringField(required=True)
-    img_src = ImageField(thumbnail_size=(300, 250, True), required=True)
+    img_src = FileField(required=True)
+
+    #img_src = ImageField(thumbnail_size=(300, 250, True), required=True)
     post_link = ReferenceField(Post, reverse_delete_rule=CASCADE, required=True)
 
 

@@ -5,7 +5,7 @@ from app.config import *
 from app.model import *
 
 
-connect("b_test")
+connect("local")
 
 Counter(name='post_counter').save()
 

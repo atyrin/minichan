@@ -3,4 +3,4 @@
 from app import minichan
 
 if __name__ == '__main__':
-    minichan.run(debug=True)
+    minichan.run(host = '0.0.0.0',port=80)
