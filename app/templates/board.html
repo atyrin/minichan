@@ -17,7 +17,13 @@
 {% if data: %}
 {% for thread in data %}
 <article class="post clear">
-	<a href="{{thread["post_id"]}}" target="_blank"><img src="/thumb/{{thread["image_id"]}}" class="image"></a>
+	{% if thread["content_type"] == "video/webm": %}
+	<video src="/thumb/{{thread["image_id"]}}" class="video" controls></video>
+	{% else: %}
+	<a href="{{thread["post_id"]}}" target="_blank">
+	<img src="/thumb/{{thread["image_id"]}}" class="image">
+	</a>
+	{% endif %}	
 	<h3 class="header"><a href="/{{thread["post_id"]}}">#{{thread["post_id"]}}: {{thread["subject"]}}</a>
 	<span class="post-id"><a href="{{thread["post_id"]}}"><span class="counter">{{thread["bump_counter"]}} </span><i class="fa fa-comment"></i></a></span></h3>
 	{% autoescape false %}

@@ -32,7 +32,7 @@ def board():
         thread.save()
 
         try:
-            photo = request.files['file']
+            photo = request.files['file'] #TO DO: Перенести всё это говно в одну функцию
             print("Filename = ", photo.filename)
             type = photo.filename.rsplit('.',1)[-1]
             print("type: "+ type)
@@ -48,11 +48,12 @@ def board():
             else:
                 print("Other extension: ", type)
                 image.img_src.put(photo, content_type = 'image/jpeg')
+                print("Other extension:", image.img_src.content_type)
                 print("put done")
 
             image.img_id = str(hashlib.md5(image.img_src.read()).hexdigest())
             image.save()
-
+            thread.update(set__content_type=image.img_src.content_type)
             thread.update(set__image_id=image.img_id)
         except:
             pass
@@ -84,28 +85,30 @@ def thread(thread_id):
 
         try:
             photo = request.files['file']
-            print("Filename = ", photo.filename)
-            type = photo.filename.rsplit('.',1)[-1]
-            print("type: "+ type)
-            image = model.Image(post_link=reply)
+            if photo.filename:
+                print("Filename = ", photo.filename)
+                type = photo.filename.rsplit('.',1)[-1]
+                print("type: "+ type)
+                image = model.Image(post_link=reply)
 
-            if type == "gif":
-                print("It's GIF")
-                image.img_src.put(photo, content_type = 'image/gif')
-                print("put done")              
-            elif type == "webm":
-                print("It's webm")
-                image.img_src.put(photo, content_type = 'video/webm')
-                print("put done")
-            else:
-                print("Other extension: ", type)
-                image.img_src.put(photo, content_type = 'image/jpeg')
-                print("put done")
+                if type == "gif":
+                    print("It's GIF")
+                    image.img_src.put(photo, content_type = 'image/gif')
+                    print("put done")              
+                elif type == "webm":
+                    print("It's webm")
+                    image.img_src.put(photo, content_type = 'video/webm')
+                    print("put done")
+                else:
+                    print("Other extension: ", type)
+                    image.img_src.put(photo, content_type = 'image/jpeg')
+                    print("put done")
 
-            image.img_id = str(hashlib.md5(image.img_src.read()).hexdigest())
-            image.save()
+                image.img_id = str(hashlib.md5(image.img_src.read()).hexdigest())
+                image.save()
 
-            reply.update(set__image_id=image.img_id)
+                reply.update(set__content_type=image.img_src.content_type)
+                reply.update(set__image_id=image.img_id)
         except:
             print("Exception was catched")
 
