@@ -36,7 +36,7 @@ def board():
             print("Filename = ", photo.filename)
             type = photo.filename.rsplit('.',1)[-1]
             print("type: "+ type)
-            image = model.Image(post_link=reply)
+            image = model.Image(post_link=thread)
             if type == "gif":
                 print("It's GIF")
                 image.img_src.put(photo, content_type = 'image/gif')
