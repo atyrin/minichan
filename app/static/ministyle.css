@@ -312,3 +312,9 @@ div.ml_box.animated {
 .paragraph .highlight{
     background-color:yellow;
 }
+
+.video{
+	float: left;
+	width:100%;
+	max-width:500px;
+}

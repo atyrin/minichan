@@ -7,7 +7,7 @@ class Post(Document):
     body = StringField(required=True, max_length=6000)
     subject = StringField()
     image_id = StringField()
-
+    content_type = StringField()
     meta = {'allow_inheritance': True}
 
 
@@ -18,7 +18,7 @@ class Thread(Post):
     @queryset_manager
     def all(doc_cls, queryset):
         return [dict(x.to_mongo()) for x in queryset.order_by('-bump_time').only('post_id', 'creation_time',
-            'body', 'image_id', 'subject', 'bump_time', 'bump_counter', 'bump_limit')]
+            'body', 'image_id', 'subject', 'bump_time', 'bump_counter', 'bump_limit','content_type')]
     @queryset_manager
     def oldest(doc_cls, queryset):
         return queryset.order_by('bump_time')[0]
@@ -29,7 +29,7 @@ class Reply(Post):
     @queryset_manager
     def all(doc_cls, queryset):
         return queryset.order_by('post_id').only('post_id', 'creation_time',
-            'body', 'image_id')
+            'body', 'image_id','content_type')
 
 
 class Image(Document):
