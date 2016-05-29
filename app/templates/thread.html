@@ -9,6 +9,11 @@
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script type="text/javascript" src="https://cdn.rawgit.com/IonicaBizau/mini-lightbox/master/dist/mini-lightbox.min.js"></script>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/markusslima/bootstrap-filestyle/master/src/bootstrap-filestyle.js"></script>
+
 </head>
 <body>
 <!--Здарова, а чего в исходники полез? Сдеанонить кого решил?-->
@@ -24,8 +29,7 @@
 	<textarea type="text" rows="6" name="body" id="body" maxlength="1000" required></textarea>
 	<div class="button-group clear">
 		<div class="file-input-wrapper">
-			<button class="btn-file-input">Image</button>
-			<input type="file" name="file" accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|images/*, .webm"/>
+            <input type="file" name="file" class="filestyle" data-size="sm" accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|images/*, .webm">
 		</div>
 		<button type="submit" class="submit-button">Reply</button>
 	</div>
@@ -104,5 +108,6 @@ $("a[data-text]").click(function(){
 <a name="footer" href="../">На главную</a>
 </br>
 </body>
+<script>$(":file").filestyle({size: "sm"});</script>
 <script type="text/javascript"> (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter37048260 = new Ya.Metrika({ id:37048260, clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks"); </script> <noscript><div><img src="https://mc.yandex.ru/watch/37048260" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 </html>

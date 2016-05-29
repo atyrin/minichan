@@ -40,8 +40,6 @@ class Reply(Post):
 class Image(Document):
     img_id = StringField(required=True)
     img_src = FileField(required=True)
-
-    # img_src = ImageField(thumbnail_size=(300, 250, True), required=True)
     post_link = ReferenceField(Post, reverse_delete_rule=CASCADE, required=True)
 
 

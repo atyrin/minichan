@@ -5,9 +5,15 @@
 	<title>Veeamchan</title>
 	<link rel="shortcut icon" href="static/favicon.png" type="image/png">
 	<meta charset="utf-8" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
 	<link rel="stylesheet" href="static/ministyle.css" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/markusslima/bootstrap-filestyle/master/src/bootstrap-filestyle.js"></script>
+
+
 </head>
 <body>
 <!--Здарова, а чего в исходники полез? Сдеанонить кого решил?-->
@@ -39,11 +45,11 @@
 	<textarea type="text" rows="6" name="body" placeholder="место для псто" maxlength="1000" required></textarea>
 	<div class="button-group clear">
 		<div class="file-input-wrapper">
-			<button class="btn-file-input">Image</button>
-			<input type="file" name="file" accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|images/*, .webm" required/>
-		</div>
+			<input type="file" name="file" class="filestyle" accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|images/*, .webm" required>
+        </div>
 		<button type="submit" class="submit-button">Create thread</button>
 	</div>
 </form>
 </body>
+<script>$(":file").filestyle();</script>
 </html>
