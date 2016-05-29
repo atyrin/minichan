@@ -13,6 +13,11 @@ a {
 	font-weight:bold;
 }
 
+.navigation {
+	margin: 1em;
+    font-size: large;
+}
+
 
 form {
 	width: 100%;
@@ -120,7 +125,7 @@ textarea:focus {
 	padding: 0;
 }
 .counter {
-
+    font-size: 1.2em !important;
 	color: gray;
 }
 .icon {
