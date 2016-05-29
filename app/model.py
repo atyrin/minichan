@@ -15,10 +15,14 @@ class Thread(Post):
     bump_time = FloatField(required=True)
     bump_counter = IntField(required=True, default=0)
     bump_limit = BooleanField(required=True, default=False)
+
     @queryset_manager
     def all(doc_cls, queryset):
         return [dict(x.to_mongo()) for x in queryset.order_by('-bump_time').only('post_id', 'creation_time',
-            'body', 'image_id', 'subject', 'bump_time', 'bump_counter', 'bump_limit','content_type')]
+                                                                                 'body', 'image_id', 'subject',
+                                                                                 'bump_time', 'bump_counter',
+                                                                                 'bump_limit', 'content_type')]
+
     @queryset_manager
     def oldest(doc_cls, queryset):
         return queryset.order_by('bump_time')[0]
@@ -26,17 +30,16 @@ class Thread(Post):
 
 class Reply(Post):
     thread_link = ReferenceField(Thread, reverse_delete_rule=CASCADE, required=True)
+
     @queryset_manager
     def all(doc_cls, queryset):
         return queryset.order_by('post_id').only('post_id', 'creation_time',
-            'body', 'image_id','content_type')
+                                                 'body', 'image_id', 'content_type')
 
 
 class Image(Document):
     img_id = StringField(required=True)
     img_src = FileField(required=True)
-
-    #img_src = ImageField(thumbnail_size=(300, 250, True), required=True)
     post_link = ReferenceField(Post, reverse_delete_rule=CASCADE, required=True)
 
 

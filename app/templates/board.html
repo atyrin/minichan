@@ -7,12 +7,19 @@
 	<meta charset="utf-8" />
 	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
 	<link rel="stylesheet" href="static/ministyle.css" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/markusslima/bootstrap-filestyle/master/src/bootstrap-filestyle.js"></script>
+
+
 </head>
 <body>
 <!--Здарова, а чего в исходники полез? Сдеанонить кого решил?-->
-<center><b>Добро пожаловать. Снова.</b><center>
+<center><h3>Добро пожаловать. Снова.</h3></center>
 </br>
-<a onclick="window.scrollTo(0,document.body.scrollHeight);return false;" href="#">New thread</a>
+<center><a onclick="window.scrollTo(0,document.body.scrollHeight);return false;" href="#">New thread</a></center>
 </br>
 {% if data: %}
 {% for thread in data %}
@@ -32,20 +39,17 @@
 </article>
 {% endfor %}
 {% endif %}
-<center>Треад<center>
+<center>Треад</center>
 <form action="/" method="post" enctype="multipart/form-data" id="form">
 	<input type="text" name="subject" class="input-subject" maxlength="20" />
-	<textarea type="text" rows="6" name="body" placeholder="место для псто" maxlength="1000"></textarea>
+	<textarea type="text" rows="6" name="body" placeholder="место для псто" maxlength="1000" required></textarea>
 	<div class="button-group clear">
 		<div class="file-input-wrapper">
-			<button class="btn-file-input">Image</button>
-			<input type="file" name="file" />
-		</div>
+			<input type="file" name="file" class="filestyle" accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|images/*, .webm" required>
+        </div>
 		<button type="submit" class="submit-button">Create thread</button>
 	</div>
 </form>
-<center>Анон (с). 2016<center>
-
 </body>
-
+<script>$(":file").filestyle();</script>
 </html>

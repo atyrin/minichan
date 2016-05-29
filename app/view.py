@@ -11,11 +11,6 @@ from app import model
 from app import config
 
 
-@minichan.route('/sandbox', methods=['GET'] )
-def sandbox():
-    return render_template('sandbox.html')
-
-
 @minichan.route('/', methods=['GET', 'POST'])
 def board():
     if request.method == 'POST':
@@ -32,22 +27,22 @@ def board():
         thread.save()
 
         try:
-            photo = request.files['file'] #TO DO: Перенести всё это говно в одну функцию
+            photo = request.files['file']  # TO DO: Перенести всё это говно в одну функцию
             print("Filename = ", photo.filename)
-            type = photo.filename.rsplit('.',1)[-1]
-            print("type: "+ type)
+            type = photo.filename.rsplit('.', 1)[-1]
+            print("type: " + type)
             image = model.Image(post_link=thread)
             if type == "gif":
                 print("It's GIF")
-                image.img_src.put(photo, content_type = 'image/gif')
-                print("put done")              
+                image.img_src.put(photo, content_type='image/gif')
+                print("put done")
             elif type == "webm":
                 print("It's webm")
-                image.img_src.put(photo, content_type = 'video/webm')
+                image.img_src.put(photo, content_type='video/webm')
                 print("put done")
             else:
                 print("Other extension: ", type)
-                image.img_src.put(photo, content_type = 'image/jpeg')
+                image.img_src.put(photo, content_type='image/jpeg')
                 print("Other extension:", image.img_src.content_type)
                 print("put done")
 
@@ -61,8 +56,6 @@ def board():
         return redirect('/')
     else:
         return render_template('board.html', data=model.Thread.all)
-        #return render_template('sandbox.html')
-
 
 
 @minichan.route('/<thread_id>', methods=['GET', 'POST'])
@@ -87,21 +80,21 @@ def thread(thread_id):
             photo = request.files['file']
             if photo.filename:
                 print("Filename = ", photo.filename)
-                type = photo.filename.rsplit('.',1)[-1]
-                print("type: "+ type)
+                type = photo.filename.rsplit('.', 1)[-1]
+                print("type: " + type)
                 image = model.Image(post_link=reply)
 
                 if type == "gif":
                     print("It's GIF")
-                    image.img_src.put(photo, content_type = 'image/gif')
-                    print("put done")              
+                    image.img_src.put(photo, content_type='image/gif')
+                    print("put done")
                 elif type == "webm":
                     print("It's webm")
-                    image.img_src.put(photo, content_type = 'video/webm')
+                    image.img_src.put(photo, content_type='video/webm')
                     print("put done")
                 else:
                     print("Other extension: ", type)
-                    image.img_src.put(photo, content_type = 'image/jpeg')
+                    image.img_src.put(photo, content_type='image/jpeg')
                     print("put done")
 
                 image.img_id = str(hashlib.md5(image.img_src.read()).hexdigest())
@@ -115,11 +108,11 @@ def thread(thread_id):
         return redirect('/{0}'.format(thread_id))
     else:
         data = {
-        "original_post": dict(model.Thread.objects(post_id=thread_id)[0].to_mongo()),
-        "reply_list": [dict(reply.to_mongo()) for reply in model.Reply.all(thread_link=model.Thread.objects(post_id=thread_id)[0])]
+            "original_post": dict(model.Thread.objects(post_id=thread_id)[0].to_mongo()),
+            "reply_list": [dict(reply.to_mongo()) for reply in
+                           model.Reply.all(thread_link=model.Thread.objects(post_id=thread_id)[0])]
         }
         return render_template('thread.html', data=data)
-        
 
 
 @minichan.route('/<img_type>/<img_id>', methods=['GET'])
@@ -137,17 +130,21 @@ def image(img_type, img_id):
         response.headers['Content-Type'] = image.img_src.content_type
         return response
 
+
 def next_counter():
     model.Counter.objects(name='post_counter').update_one(inc__next_id=1)
     return model.Counter.objects[0].next_id
-	
-def ConvertTextToSpanClass( Text, ClassName ):
-    Text = Text.replace(("["+ClassName+"]"), "<span class=\""+ ClassName + "\">")
-    Text = Text.replace(("[/"+ClassName+"]"), "</span>" ) #TO DO:Replace with regex
+
+
+def ConvertTextToSpanClass(Text, ClassName):
+    Text = Text.replace(("[" + ClassName + "]"), "<span class=\"" + ClassName + "\">")
+    Text = Text.replace(("[/" + ClassName + "]"), "</span>")  # TO DO:Replace with regex
     return Text
-		
+
+
 def FormatLinks(Text):
-    return re.sub(r"\[link\](.*)\[\/link\]",r'<a href="\1">\1</a>',Text)
+    return re.sub(r"\[link\](.*)\[\/link\]", r'<a href="\1">\1</a>', Text)
+
 
 def FormatText(Text, SpanClasses):
     for SpanClass in SpanClasses:
