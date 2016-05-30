@@ -1,3 +1,4 @@
+{% import 'Macro.html' as macro %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -36,11 +37,7 @@
 
 <article class="post clear" id="{{data["original_post"]["post_id"]}}">
 	<!--<a href="/image/{{data["original_post"]["image_id"]}}" target="_blank"></a>-->
-		{% if data["original_post"]["content_type"] == "video/webm": %}
-		<video src="/thumb/{{data["original_post"]["image_id"]}}"  class="video" controls></video>
-		{% else: %}
-        <img data-image-opened="/image/{{data["original_post"]["image_id"]}}" src="/thumb/{{data["original_post"]["image_id"]}}" class="image" alt="">
-		{% endif %}
+		{{ macro.put_multimedia(data["original_post"]) }}
 	<h3 class="header">#{{data["original_post"]["post_id"]}}: {{data["original_post"]["subject"]}}
 	<span class="post-id"><a href="" name="{{data["original_post"]["post_id"]}}" data-text="&gt;&gt;{{data["original_post"]["post_id"]}}"><i class="fa fa-share"><span class="counter"></span></i></a></span></h3>
 	{% autoescape false %}
@@ -55,11 +52,7 @@
 {% if "image_id" in reply: %}
 <div>
 <!--<a href="/image/{{reply["image_id"]}}">qqq</a>-->
-{% if reply["content_type"] == "video/webm": %}
-<video src="/image/{{reply["image_id"]}}" class="video" controls></video>
-{% else: %}
-<img data-image-opened="/image/{{reply["image_id"]}}" src="/thumb/{{reply["image_id"]}}" class="image">
-{% endif %}
+{{ macro.put_multimedia(reply) }}
 </div>
 {% endif %}
 <h3 class="header">#{{reply["post_id"]}}
@@ -93,7 +86,7 @@ MiniLightbox(".image");
 $("a[data-text]").click(function(){
   var value = $("#body").val();
    $("#body").val(value+$(this).attr("data-text"));
-   var url = location.href;               
+   var url = location.href;
    location.href = "#body";
    history.replaceState(null,null,url);
    return false;}
