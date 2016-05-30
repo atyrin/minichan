@@ -3,6 +3,7 @@ from datetime import datetime
 import hashlib
 import html
 import re
+import sys
 
 from flask import request, redirect, render_template, make_response
 
@@ -20,38 +21,13 @@ def board():
         thread = model.Thread()
         thread.post_id = next_counter()
         thread.body = html.escape(request.form['body'])
-        thread.body = FormatText(thread.body, config.SPAN_CLASSES)
+        thread.body = format_text(thread.body, config.SPAN_CLASSES)
         thread.subject = request.form['subject']
         thread.bump_time = time()
         thread.creation_time = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
         thread.save()
 
-        try:
-            photo = request.files['file']  # TO DO: Перенести всё это говно в одну функцию
-            print("Filename = ", photo.filename)
-            type = photo.filename.rsplit('.', 1)[-1]
-            print("type: " + type)
-            image = model.Image(post_link=thread)
-            if type == "gif":
-                print("It's GIF")
-                image.img_src.put(photo, content_type='image/gif')
-                print("put done")
-            elif type == "webm":
-                print("It's webm")
-                image.img_src.put(photo, content_type='video/webm')
-                print("put done")
-            else:
-                print("Other extension: ", type)
-                image.img_src.put(photo, content_type='image/jpeg')
-                print("Other extension:", image.img_src.content_type)
-                print("put done")
-
-            image.img_id = str(hashlib.md5(image.img_src.read()).hexdigest())
-            image.save()
-            thread.update(set__content_type=image.img_src.content_type)
-            thread.update(set__image_id=image.img_id)
-        except:
-            pass
+        upload_multimedia(request, thread)
 
         return redirect('/')
     else:
@@ -72,38 +48,11 @@ def thread(thread_id):
         reply.post_id = next_counter()
         reply.creation_time = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
         reply.body = html.escape(request.form['body'])
-        reply.body = FormatText(reply.body, config.SPAN_CLASSES)
+        reply.body = format_text(reply.body, config.SPAN_CLASSES)
         reply.thread_link = original_post
         reply.save()
 
-        try:
-            photo = request.files['file']
-            if photo.filename:
-                print("Filename = ", photo.filename)
-                type = photo.filename.rsplit('.', 1)[-1]
-                print("type: " + type)
-                image = model.Image(post_link=reply)
-
-                if type == "gif":
-                    print("It's GIF")
-                    image.img_src.put(photo, content_type='image/gif')
-                    print("put done")
-                elif type == "webm":
-                    print("It's webm")
-                    image.img_src.put(photo, content_type='video/webm')
-                    print("put done")
-                else:
-                    print("Other extension: ", type)
-                    image.img_src.put(photo, content_type='image/jpeg')
-                    print("put done")
-
-                image.img_id = str(hashlib.md5(image.img_src.read()).hexdigest())
-                image.save()
-
-                reply.update(set__content_type=image.img_src.content_type)
-                reply.update(set__image_id=image.img_id)
-        except:
-            print("Exception was catched")
+        upload_multimedia(request, reply)
 
         return redirect('/{0}'.format(thread_id))
     else:
@@ -131,23 +80,51 @@ def image(img_type, img_id):
         return response
 
 
+def upload_multimedia(post_request, post: model.Post):
+    try:
+        photo = post_request.files['file']
+        print("Filename = ", photo.filename)
+        file_extension = photo.filename.rsplit('.', 1)[-1]
+        print("type: " + file_extension)
+        post_attachment = model.Image(post_link=post)
+        if file_extension == "gif":
+            print("It's GIF")
+            post_attachment.img_src.put(photo, content_type='image/gif')
+            print("put done")
+        elif file_extension == "webm":
+            print("It's webm")
+            post_attachment.img_src.put(photo, content_type='video/webm')
+            print("put done")
+        else:
+            print("Other extension: ", file_extension)
+            post_attachment.img_src.put(photo, content_type='image/jpeg')
+            print("Other extension:", post_attachment.img_src.content_type)
+            print("put done")
+
+        post_attachment.img_id = str(hashlib.md5(post_attachment.img_src.read()).hexdigest())
+        post_attachment.save()
+        post.update(set__content_type=post_attachment.img_src.content_type)
+        post.update(set__image_id=post_attachment.img_id)
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+
 def next_counter():
     model.Counter.objects(name='post_counter').update_one(inc__next_id=1)
     return model.Counter.objects[0].next_id
 
 
-def ConvertTextToSpanClass(Text, ClassName):
-    Text = Text.replace(("[" + ClassName + "]"), "<span class=\"" + ClassName + "\">")
-    Text = Text.replace(("[/" + ClassName + "]"), "</span>")  # TO DO:Replace with regex
-    return Text
+def convert_text_to_span_class(text, class_name):
+    text = text.replace(("[" + class_name + "]"), "<span class=\"" + class_name + "\">")
+    text = text.replace(("[/" + class_name + "]"), "</span>")  # TO DO:Replace with regex
+    return text
 
 
-def FormatLinks(Text):
-    return re.sub(r"\[link\](.*)\[\/link\]", r'<a href="\1">\1</a>', Text)
+def format_links(text):
+    return re.sub(r"\[link\](.*)\[/link\]", r'<a href="\1">\1</a>', text)
 
 
-def FormatText(Text, SpanClasses):
-    for SpanClass in SpanClasses:
-        Text = ConvertTextToSpanClass(Text, SpanClass)
-    Text = FormatLinks(Text)
-    return Text
+def format_text(text, span_classes):
+    for SpanClass in span_classes:
+        text = convert_text_to_span_class(text, SpanClass)
+    text = format_links(text)
+    return text
