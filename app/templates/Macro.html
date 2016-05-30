@@ -1,6 +1,6 @@
 {% macro put_multimedia(post) %}
 	{% if post["content_type"] == "video/webm": %}
-	<video src="/thumb/{{post["image_id"]}}" class="video" controls></video>
+	<video src="/thumb/{{post["image_id"]}}" class="video" preload="metadata" controls></video>
 	{% else: %}
 	<img src="/thumb/{{post["image_id"]}}" class="image">
 	{% endif %}

@@ -25,7 +25,7 @@
 {% for thread in data %}
 <article class="post clear">
 	{% if thread["content_type"] == "video/webm": %}
-	<video src="/thumb/{{thread["image_id"]}}" class="video" controls></video>
+	<video src="/thumb/{{thread["image_id"]}}" class="video" preload="metadata" controls></video>
 	{% else: %}
 	<a href="{{thread["post_id"]}}" target="_blank">
 	<img src="/thumb/{{thread["image_id"]}}" class="image">
