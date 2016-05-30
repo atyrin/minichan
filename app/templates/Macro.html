@@ -5,3 +5,16 @@
 	<img src="/thumb/{{post["image_id"]}}" class="image">
 	{% endif %}
 {%- endmacro %}
+
+{% macro markup_buttons() %}
+	<script src="static/MarkupButtons.js"></script>
+	<div class="button-group clear">
+		<button type="button" class="markup-button" title="Spoiler" data-markup-tag="spoiler" onclick="AddMarkup(this,'body')"><span class="spoiler">S</span></button>
+		<button type="button" class="markup-button" title="Strong"  data-markup-tag="strong" onclick="AddMarkup(this,'body')"><span class="strong">S</span></button>
+		<button type="button" class="markup-button" title="Italic"  data-markup-tag="italic" onclick="AddMarkup(this,'body')"><span class="italic">I</span></button>
+		<button type="button" class="markup-button" title="Strikethrough" data-markup-tag="strikethrough" onclick="AddMarkup(this,'body')"><span class="strikethrough">S</span></button>
+		<button type="button" class="markup-button" title="Underline" data-markup-tag="underline" onclick="AddMarkup(this,'body')"><span class="underline">U</span></button>
+		<button type="button" class="markup-button" title="Highlight" data-markup-tag="highlight" onclick="AddMarkup(this,'body')"><span class="highlight">H</span></button>
+		<button type="button" class="markup-button" title="Link"  data-markup-tag="link" onclick="AddMarkup(this,'body')"><span class="underline">http://</span></button>
+	</div>
+{%- endmacro %}

@@ -41,8 +41,10 @@ textarea:focus {
 }
 .button-group {
 	width: 100%;
-    height: 2.5em;
+    height: 2.7em;
+    text-align: center;
 }
+
 .input-file {
 	width: 100%;
 	margin-top: 1%;
@@ -76,6 +78,18 @@ textarea:focus {
     font-size: larger;
 }
 
+.markup-button {
+    width: 10%;
+	outline: none !important;
+	box-shadow: none;
+	color: #000000;
+    border: 1px solid #36d7b7;
+    cursor: pointer;
+    height: 2em;
+    text-align: center;
+    margin: 1% 1% 0 1%;
+    font-size: medium;
+}
 
 .post {
 	position: relative;
@@ -291,32 +305,32 @@ div.ml_box.animated {
     animation-duration: 0.5s;
 }
 
-.paragraph .spoiler{ 
+.spoiler{
   color: black; 
   background-color:black;
 }
 
-.paragraph .spoiler:hover{
+ .spoiler:hover{
   color: white;
   }
   
-.paragraph .strong{
+ .strong{
     font-weight: bold;
 }
 
-.paragraph .italic{
+ .italic{
     font-style: italic;
 }
 
-.paragraph .strikethrough{
+ .strikethrough{
     text-decoration: line-through;
 }
 
-.paragraph .underline{
+ .underline{
     text-decoration: underline;
 }
 
-.paragraph .highlight{
+ .highlight{
     background-color:yellow;
 }
 

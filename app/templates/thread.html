@@ -26,6 +26,7 @@
 
 <form action="/{{data["original_post"]["post_id"]}}" method="post" enctype="multipart/form-data" id="form">
 	<textarea type="text" rows="6" name="body" id="body" maxlength="1000" required></textarea>
+	{{ macro.markup_buttons() }}
 	<div class="button-group clear">
 		<div class="file-input-wrapper">
             <input type="file" name="file" class="filestyle" data-size="sm" accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|images/*, .webm">
