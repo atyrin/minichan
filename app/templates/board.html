@@ -1,3 +1,4 @@
+{% import 'Macro.html' as macro %}
 <!DOCTYPE html>
 <html>
 <script type="text/javascript"> (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter37048260 = new Ya.Metrika({ id:37048260, clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks"); </script> <noscript><div><img src="https://mc.yandex.ru/watch/37048260" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
@@ -42,7 +43,8 @@
 <center>Треад</center>
 <form action="/" method="post" enctype="multipart/form-data" id="form">
 	<input type="text" name="subject" class="input-subject" maxlength="20" />
-	<textarea type="text" rows="6" name="body" placeholder="место для псто" maxlength="1000" required></textarea>
+	<textarea type="text" rows="6" name="body" id="body" placeholder="место для псто" maxlength="1000" required></textarea>
+	{{ macro.markup_buttons() }}
 	<div class="button-group clear">
 		<div class="file-input-wrapper">
 			<input type="file" name="file" class="filestyle" accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|images/*, .webm" required>
