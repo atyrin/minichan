@@ -83,28 +83,29 @@ def image(img_type, img_id):
 def upload_multimedia(post_request, post: model.Post):
     try:
         photo = post_request.files['file']
-        print("Filename = ", photo.filename)
-        file_extension = photo.filename.rsplit('.', 1)[-1]
-        print("type: " + file_extension)
-        post_attachment = model.Image(post_link=post)
-        if file_extension == "gif":
-            print("It's GIF")
-            post_attachment.img_src.put(photo, content_type='image/gif')
-            print("put done")
-        elif file_extension == "webm":
-            print("It's webm")
-            post_attachment.img_src.put(photo, content_type='video/webm')
-            print("put done")
-        else:
-            print("Other extension: ", file_extension)
-            post_attachment.img_src.put(photo, content_type='image/jpeg')
-            print("Other extension:", post_attachment.img_src.content_type)
-            print("put done")
+        if photo.filename:
+            print("Filename = ", photo.filename)
+            file_extension = photo.filename.rsplit('.', 1)[-1]
+            print("type: " + file_extension)
+            post_attachment = model.Image(post_link=post)
+            if file_extension == "gif":
+                print("It's GIF")
+                post_attachment.img_src.put(photo, content_type='image/gif')
+                print("put done")
+            elif file_extension == "webm":
+                print("It's webm")
+                post_attachment.img_src.put(photo, content_type='video/webm')
+                print("put done")
+            else:
+                print("Other extension: ", file_extension)
+                post_attachment.img_src.put(photo, content_type='image/jpeg')
+                print("Other extension:", post_attachment.img_src.content_type)
+                print("put done")
 
-        post_attachment.img_id = str(hashlib.md5(post_attachment.img_src.read()).hexdigest())
-        post_attachment.save()
-        post.update(set__content_type=post_attachment.img_src.content_type)
-        post.update(set__image_id=post_attachment.img_id)
+            post_attachment.img_id = str(hashlib.md5(post_attachment.img_src.read()).hexdigest())
+            post_attachment.save()
+            post.update(set__content_type=post_attachment.img_src.content_type)
+            post.update(set__image_id=post_attachment.img_id)
     except:
         print("Unexpected error:", sys.exc_info()[0])
 
