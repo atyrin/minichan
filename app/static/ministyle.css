@@ -14,10 +14,18 @@ a {
 }
 
 .navigation {
+    top: 0;
 	margin: 1em;
     font-size: large;
+    position: fixed;
 }
 
+.bottom-navigation {
+	margin: 1em;
+    font-size: large;
+    position: fixed;
+    bottom: 0;
+}
 
 form {
 	width: 100%;
