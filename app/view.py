@@ -79,6 +79,9 @@ def image(img_type, img_id):
         response.headers['Content-Type'] = image.img_src.content_type
         return response
 
+@minichan.errorhandler(500)
+def page_not_found(error):
+    return render_template('500.html'), 500
 
 def upload_multimedia(post_request, post: model.Post):
     try:
