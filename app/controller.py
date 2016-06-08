@@ -1,15 +1,15 @@
-from time import time
-from datetime import datetime
 import hashlib
 import html
-import re
 import sys
+from datetime import datetime
+from time import time
 
 from flask import request, redirect, render_template, make_response
 
+from app import config
 from app import minichan
 from app import model
-from app import config
+from app.TextFormatter import format_text
 
 
 @minichan.route('/', methods=['GET', 'POST'])
@@ -79,9 +79,11 @@ def image(img_type, img_id):
         response.headers['Content-Type'] = image.img_src.content_type
         return response
 
+
 @minichan.errorhandler(500)
 def page_not_found(error):
     return render_template('500.html'), 500
+
 
 def upload_multimedia(post_request, post: model.Post):
     try:
@@ -112,23 +114,9 @@ def upload_multimedia(post_request, post: model.Post):
     except:
         print("Unexpected error:", sys.exc_info()[0])
 
+
 def next_counter():
     model.Counter.objects(name='post_counter').update_one(inc__next_id=1)
     return model.Counter.objects[0].next_id
 
 
-def convert_text_to_span_class(text, class_name):
-    text = text.replace(("[" + class_name + "]"), "<span class=\"" + class_name + "\">")
-    text = text.replace(("[/" + class_name + "]"), "</span>")  # TO DO:Replace with regex
-    return text
-
-
-def format_links(text):
-    return re.sub(r"\[link\](.*)\[/link\]", r'<a href="\1">\1</a>', text)
-
-
-def format_text(text, span_classes):
-    for SpanClass in span_classes:
-        text = convert_text_to_span_class(text, SpanClass)
-    text = format_links(text)
-    return text
