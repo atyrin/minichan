@@ -9,7 +9,8 @@ from flask import request, redirect, render_template, make_response
 from app import config
 from app import minichan
 from app import model
-from app.TextFormatter import format_text
+from app.text_formatter import format_text
+from app import thumbnail_generator
 
 
 @minichan.route('/', methods=['GET', 'POST'])
@@ -66,9 +67,17 @@ def thread(thread_id):
 
 @minichan.route('/<img_type>/<img_id>', methods=['GET'])
 def image(img_type, img_id):
-    if img_type == 'thumb':
+    if img_type == 'img':
         image = model.Image.objects(img_id=img_id).first()
         myimage = image.img_src.read()
+        response = make_response(myimage)
+        response.headers['Content-Type'] = 'image/jpeg'
+        return response
+    elif img_type == 'thumb':
+        image = model.Image.objects(img_id=img_id).first()
+        myimage = image.img_thumbnail_src.read()
+        if myimage is None:
+            myimage = image.img_src.read()
         response = make_response(myimage)
         response.headers['Content-Type'] = 'image/jpeg'
         return response
@@ -104,6 +113,9 @@ def upload_multimedia(post_request, post: model.Post):
             else:
                 print("Other extension: ", file_extension)
                 post_attachment.img_src.put(photo, content_type='image/jpeg')
+                thumbnail = thumbnail_generator.create_image_thumbnail(photo)
+                post_attachment.img_thumbnail_src.put(thumbnail, content_type='image/jpeg')
+
                 print("Other extension:", post_attachment.img_src.content_type)
                 print("put done")
 
@@ -118,5 +130,3 @@ def upload_multimedia(post_request, post: model.Post):
 def next_counter():
     model.Counter.objects(name='post_counter').update_one(inc__next_id=1)
     return model.Counter.objects[0].next_id
-
-
