@@ -65,6 +65,7 @@ def thread(thread_id):
         response.headers["X-Frame-Options"] = "ALLOW-FROM youtube.com"
         return response
 
+
 @minichan.route('/<img_type>/<img_id>', methods=['GET'])
 def image(img_type, img_id):
     if img_type == 'thumb':
@@ -128,22 +129,26 @@ def convert_text_to_span_class(text, class_name):
 
 
 def format_links(text):
-    youtube_links = re.findall(r"(\[link\].*youtu.*be.*\[/link\])", text)
+    text = youtube_embed(text)
+    return re.sub(r"\[link\](.*?)\[/link\]", r'<a href="\1">\1</a>', text)
+
+
+def youtube_embed(text):
+    youtube_links = re.findall(r"(\[link\].*?youtu.*?be.*?\[/link\])", text)
     if youtube_links:
         for link in youtube_links:
-            video_id = re.findall(r"((?<=(v|V)/)|(?<=be/)|(?<=(\?|\&)v=)|(?<=embed/))([\w-]+)", link)[-1][-1]
-            frame = "<iframe width='560' height='315' src='https://www.youtube.com/embed/{0}' frameborder='0' allowfullscreen></iframe>".format(video_id)
-            text = text.replace(link, frame)
-    return re.sub(r"\[link\](.*)\[/link\]", r'<a href="\1">\1</a>', text)
-
-
-def format_code(text):
-    return re.sub(r"\[code\]((.|\n)*)\[/code\]", r'<code>\1</code>', text, flags=re.MULTILINE)
+            try:
+                video_id = re.findall(r"((?<=(v|V)/)|(?<=be/)|(?<=(\?|\&)v=)|(?<=embed/))([\w-]+)", link)[-1][-1]
+                frame = "<iframe width='560' height='315' src='https://www.youtube.com/embed/{0}' frameborder='0' allowfullscreen></iframe>".format(
+                    video_id)
+                text = text.replace(link, frame)
+            except:
+                print("Failed to take video_id:", sys.exc_info()[0])
+    return text
 
 
 def format_text(text, span_classes):
     for SpanClass in span_classes:
         text = convert_text_to_span_class(text, SpanClass)
     text = format_links(text)
-    text = format_code(text)
     return text
