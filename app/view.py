@@ -61,7 +61,9 @@ def thread(thread_id):
             "reply_list": [dict(reply.to_mongo()) for reply in
                            model.Reply.all(thread_link=model.Thread.objects(post_id=thread_id)[0])]
         }
-        return render_template('thread.html', data=data)
+        response = make_response(render_template('thread.html', data=data))
+        response.headers["X-Frame-Options"] = "ALLOW-FROM youtube.com"
+        return response
 
 
 @minichan.route('/<img_type>/<img_id>', methods=['GET'])
@@ -79,9 +81,11 @@ def image(img_type, img_id):
         response.headers['Content-Type'] = image.img_src.content_type
         return response
 
+
 @minichan.errorhandler(500)
 def page_not_found(error):
     return render_template('500.html'), 500
+
 
 def upload_multimedia(post_request, post: model.Post):
     try:
@@ -112,6 +116,7 @@ def upload_multimedia(post_request, post: model.Post):
     except:
         print("Unexpected error:", sys.exc_info()[0])
 
+
 def next_counter():
     model.Counter.objects(name='post_counter').update_one(inc__next_id=1)
     return model.Counter.objects[0].next_id
@@ -124,7 +129,38 @@ def convert_text_to_span_class(text, class_name):
 
 
 def format_links(text):
-    return re.sub(r"\[link\](.*)\[/link\]", r'<a href="\1">\1</a>', text)
+    text = youtube_embed(text)
+    text = yandex_music(text)
+    return re.sub(r"\[link\](.*?)\[/link\]", r'<a href="\1">\1</a>', text)
+
+
+def youtube_embed(text):
+    youtube_links = re.findall(r"(\[link\].*?youtu.*?be.*?\[/link\])", text)
+    if youtube_links:
+        for link in youtube_links:
+            try:
+                video_id = re.findall(r"((?<=(v|V)/)|(?<=be/)|(?<=(\?|\&)v=)|(?<=embed/))([\w-]+)", link)[-1][-1]
+                frame = "<iframe width='560' height='315' src='https://www.youtube.com/embed/{0}' frameborder='0' allowfullscreen></iframe>".format(
+                    video_id)
+                text = text.replace(link, frame)
+            except:
+                print("Failed to take video_id:", sys.exc_info()[0])
+    return text
+
+
+def yandex_music(text):
+    ya_music_links = re.findall(r"(\[link\].*?music.yandex.ru/album/.*?\[/link\])", text)
+    if ya_music_links:
+        for link in ya_music_links:
+            try:
+                track_id = re.findall(r"/track/(\d*)", link)[0]
+                album_id = re.findall(r"/album/(\d*)", link)[0]
+                frame = "<iframe frameborder='0' style='border:none;width:400px;height:100px;' width='400' height='100' src='https://music.yandex.ru/iframe/#track/{0}/{1}/'></iframe>".format(
+                    track_id, album_id)
+                text = text.replace(link, frame)
+            except:
+                print("Failed to take yandex music track:", sys.exc_info()[0])
+    return text
 
 
 def format_text(text, span_classes):
