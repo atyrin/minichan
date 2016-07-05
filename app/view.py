@@ -153,11 +153,15 @@ def yandex_music(text):
     if ya_music_links:
         for link in ya_music_links:
             try:
-                track_id = re.findall(r"/track/(\d*)", link)[0]
                 album_id = re.findall(r"/album/(\d*)", link)[0]
-                frame = "<iframe frameborder='0' style='border:none;width:400px;height:100px;' width='400' height='100' src='https://music.yandex.ru/iframe/#track/{0}/{1}/'></iframe>".format(
-                    track_id, album_id)
-                text = text.replace(link, frame)
+                if "track" in link:
+                    track_id = re.findall(r"/track/(\d*)", link)[0]
+                    frame = "<iframe frameborder='0' style='border:none;width:400px;height:100px;' width='400' height='100' src='https://music.yandex.ru/iframe/#track/{0}/{1}/'></iframe>".format(
+                        track_id, album_id)
+                    text = text.replace(link, frame)
+                else:
+                    frame = "<iframe frameborder='0' style='border:none;width:300px;height:600px;' width='300' height='600' src='https://music.yandex.ru/iframe/#album/{0}/'></iframe>".format(album_id)
+                    text = text.replace(link, frame)
             except:
                 print("Failed to take yandex music track:", sys.exc_info()[0])
     return text
