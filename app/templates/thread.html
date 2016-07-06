@@ -7,10 +7,11 @@
 	<meta charset="utf-8" />
 	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
 	<link rel="stylesheet" href="../static/ministyle.css" />
+    <script src="../static/miniscript.js" />
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script type="text/javascript" src="https://cdn.rawgit.com/IonicaBizau/mini-lightbox/master/dist/mini-lightbox.min.js"></script>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="https://cdn.rawgit.com/markusslima/bootstrap-filestyle/master/src/bootstrap-filestyle.js"></script>
@@ -23,10 +24,10 @@
 <div class="navigation">
 <a href="../">На главную</a>
 <br>
-<a onclick="window.scrollTo(0,document.body.scrollHeight);return false;" href="#">Вниз</a>
+<a onclick=ScrollBottom();>Вниз</a>
 </div>
-
-<form action="/{{data["original_post"]["post_id"]}}" method="post" enctype="multipart/form-data" id="form">
+<center><a id="newPost" class="linksbutton" onclick=ShowForm("form");>New post</a></center>
+<form action="/{{data["original_post"]["post_id"]}}" method="post" enctype="multipart/form-data" id="form" style="display: none">
 	<textarea type="text" rows="6" name="body" id="body" maxlength="1000" required></textarea>
 	{{ macro.markup_buttons() }}
 	<div class="button-group clear">
@@ -39,10 +40,10 @@
 <br>
 
 <article class="post clear" id="{{data["original_post"]["post_id"]}}">
-	<!--<a href="/image/{{data["original_post"]["image_id"]}}" target="_blank"></a>-->
+	{{data["original_post"]["image_id"]}}
 		{{ macro.put_multimedia(data["original_post"]) }}
 	<h3 class="header">#{{data["original_post"]["post_id"]}}: {{data["original_post"]["subject"]}}
-	<span class="post-id"><a href="" name="{{data["original_post"]["post_id"]}}" data-text="&gt;&gt;{{data["original_post"]["post_id"]}}"><i class="fa fa-share"><span class="counter"></span></i></a></span></h3>
+	<span class="post-id"><a onclick=AddReplyLink(this,"form"); name="{{data["original_post"]["post_id"]}}" data-text="&gt;&gt;{{data["original_post"]["post_id"]}}"><i class="fa fa-share"><span class="counter"></span></i></a></span></h3>
 	{% autoescape false %}
 	<p class="paragraph">{{data["original_post"]["body"]}}</p>
 	{% endautoescape %}
@@ -52,54 +53,51 @@
 {% if "reply_list" in data: %}
 {% for reply in data["reply_list"]: %}
 <article class="post clear" id="{{reply["post_id"]}}">
-{% if "image_id" in reply: %}
-<div>
-<!--<a href="/image/{{reply["image_id"]}}">qqq</a>-->
-{{ macro.put_multimedia(reply) }}
-</div>
-{% endif %}
-<h3 class="header">#{{reply["post_id"]}}
-	<span class="post-id"><a href="" name="{{reply["post_id"]}}" data-text="&gt;&gt;{{reply["post_id"]}}"><i class="fa fa-share"><span class="counter"></span></i></a></span></h3>
-	{% autoescape false %}
-	<p class="paragraph">
-	{% for string in reply["body"].split("\n"): %}
-	{% for word in string.split(" "): %}
-	{% set NormalizedWord = word | replace ("&gt;&gt;",">>")%}
-	{% if NormalizedWord.startswith(">>") and NormalizedWord[2:].isdigit:%}
-	<a href="/{{data["original_post"]["post_id"]}}#{{NormalizedWord[2:]}}">&gt;&gt;{{NormalizedWord[2:]}} </a>
-	{% else: %}
-	{{word + " "}}
-	{% endif %}
-	{% endfor %}
-	<br>
-	{% endfor %}
-	</p>
-	{% endautoescape %}
+    {% if "image_id" in reply: %}
+    <div>
+    {{reply["image_id"]}}
+    {{ macro.put_multimedia(reply) }}
+    </div>
+    {% endif %}
+    <h3 class="header">#{{reply["post_id"]}}
+        <span class="post-id">
+            <a onclick=AddReplyLink(this,"form"); name="{{reply["post_id"]}}" data-text="&gt;&gt;{{reply["post_id"]}}">
+                <i class="fa fa-share">
+                    <span class="counter"></span>
+                </i>
+            </a>
+        </span>
+    </h3>
+        {% autoescape false %}
+            <p class="paragraph">
+            {% for string in reply["body"].split("\n"): %}
+                {% for word in string.split(" "): %}
+                    {% set NormalizedWord = word | replace ("&gt;&gt;",">>")%}
+                    {% if NormalizedWord.startswith(">>") and NormalizedWord[2:].isdigit:%}
+                        <a href="/{{data["original_post"]["post_id"]}}#{{NormalizedWord[2:]}}">&gt;&gt;{{NormalizedWord[2:]}} </a>
+                    {% else: %}
+                        {{word + " "}}
+                    {% endif %}
+                {% endfor %}
+                <br>
+            {% endfor %}
+            </p>
+        {% endautoescape %}
 </article>
 {% endfor %}
 {% endif %}
 </div>
 
+<div class="bottom-navigation">
+<a onclick=ScrollTop();>Вверх</a>
+</div>
 
 <script>
 window.onload = function (){
 MiniLightbox(".image");
 };
-
-$("a[data-text]").click(function(){
-  var value = $("#body").val();
-   $("#body").val(value+$(this).attr("data-text"));
-   var url = location.href;
-   location.href = "#body";
-   history.replaceState(null,null,url);
-   return false;}
-);
 $(":file").filestyle({size: "sm"});
 </script>
-<div class="bottom-navigation">
-<a onclick="window.scrollTo(0,document.body.scrolltop);return false;" href="#">Вверх</a>
-</div>
-<br>
 </body>
 <script type="text/javascript"> (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter37048260 = new Ya.Metrika({ id:37048260, clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks"); </script> <noscript><div><img src="https://mc.yandex.ru/watch/37048260" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 </html>
