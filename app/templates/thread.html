@@ -5,17 +5,14 @@
 	<title>VeeamChan</title>
 	<link rel="shortcut icon" href="../static/favicon.png" type="image/png">
 	<meta charset="utf-8" />
-	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
+	<link rel="stylesheet" href="../static/font-awesome-4.6.3/css/font-awesome.min.css" />
 	<link rel="stylesheet" href="../static/ministyle.css" />
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-	<script type="text/javascript" src="https://cdn.rawgit.com/IonicaBizau/mini-lightbox/master/dist/mini-lightbox.min.js"></script>
+    <script type="text/javascript" src="../static/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="../static/mini-lightbox.min.js"></script>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="https://cdn.rawgit.com/markusslima/bootstrap-filestyle/master/src/bootstrap-filestyle.js"></script>
-
-
+    <link rel="stylesheet" href="../static/bootstrap-3.3.6-dist/css/bootstrap.min.css">
+    <script src="../static/bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../static/bootstrap-filestyle-1.2.1/bootstrap-filestyle.js"></script>
 </head>
 <body>
 <!--Здарова, а чего в исходники полез? Сдеанонить кого решил?-->
@@ -83,8 +80,21 @@
 
 <script>
 window.onload = function (){
-MiniLightbox(".image");
+    MiniLightbox(".image");
+
+    var frames = document.getElementsByTagName('iframe');
+    for (var i=0; i<frames.length; i++){
+        if($(frames[i]).attr("data-source")!==undefined) {
+            frames[i].src = $(frames[i]).attr("data-source");
+            setTimeout("",500);
+        }
+    }
 };
+
+function OpenFrame(element){
+        //$(element).backgroundImage = ""
+        $(element).html("<iframe width='480' height='360' src='https://www.youtube.com/embed/"+ $(element).attr('data-id') +"?autoplay=1' frameborder='0' allowfullscreen></iframe>")
+    };
 
 $("a[data-text]").click(function(){
   var value = $("#body").val();

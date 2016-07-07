@@ -347,3 +347,20 @@ div.ml_box.animated {
 	width:100%;
 	max-width:500px;
 }
+
+.youtube-tumb{
+	height: 360px;
+	width: 480px;
+}
+
+.yamusic-track{
+    border:none;
+    width:400px;
+    height:100px;
+}
+
+.yamusic-album{
+    border:none;
+    width:300px;
+    height:600px;
+}
