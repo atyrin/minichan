@@ -140,8 +140,8 @@ def youtube_embed(text):
         for link in youtube_links:
             try:
                 video_id = re.findall(r"((?<=(v|V)/)|(?<=be/)|(?<=(\?|\&)v=)|(?<=embed/))([\w-]+)", link)[-1][-1]
-                frame = "<iframe width='560' height='315' src='https://www.youtube.com/embed/{0}' frameborder='0' allowfullscreen></iframe>".format(
-                    video_id)
+                #frame = "<iframe width='560' height='315' data-source='https://www.youtube.com/embed/{0}' frameborder='0' allowfullscreen></iframe>".format(video_id)
+                frame = "<div onclick=OpenFrame(this); class='youtube-tumb' data-id='{0}' style='background-image:url(http://img.youtube.com/vi/{0}/hqdefault.jpg)'></div>".format(video_id)
                 text = text.replace(link, frame)
             except:
                 print("Failed to take video_id:", sys.exc_info()[0])
@@ -156,11 +156,11 @@ def yandex_music(text):
                 album_id = re.findall(r"/album/(\d*)", link)[0]
                 if "track" in link:
                     track_id = re.findall(r"/track/(\d*)", link)[0]
-                    frame = "<iframe frameborder='0' style='border:none;width:400px;height:100px;' width='400' height='100' src='https://music.yandex.ru/iframe/#track/{0}/{1}/'></iframe>".format(
+                    frame = "<iframe class=yamusic-track frameborder='0' width='400' height='100' data-source='https://music.yandex.ru/iframe/#track/{0}/{1}/'></iframe>".format(
                         track_id, album_id)
                     text = text.replace(link, frame)
                 else:
-                    frame = "<iframe frameborder='0' style='border:none;width:300px;height:600px;' width='300' height='600' src='https://music.yandex.ru/iframe/#album/{0}/'></iframe>".format(album_id)
+                    frame = "<iframe class=yamusic-album frameborder='0' width='300' height='600' data-source='https://music.yandex.ru/iframe/#album/{0}/'></iframe>".format(album_id)
                     text = text.replace(link, frame)
             except:
                 print("Failed to take yandex music track:", sys.exc_info()[0])
