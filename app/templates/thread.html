@@ -10,7 +10,7 @@
 
     <script type="text/javascript" src="../static/jquery-1.12.4.js"></script>
 	<script type="text/javascript" src="../static/mini-lightbox.min.js"></script>
-    <script src="../static/miniscript.js" />
+    <script type="text/javascript" src="../static/miniscript.js"></script>
 
     <link rel="stylesheet" href="../static/bootstrap-3.3.6-dist/css/bootstrap.min.css">
     <script src="../static/bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>
@@ -38,10 +38,16 @@
 <br>
 
 <article class="post clear" id="{{data["original_post"]["post_id"]}}">
-	{{data["original_post"]["image_id"]}}
-		{{ macro.put_multimedia(data["original_post"]) }}
+    {{ macro.put_multimedia(data["original_post"]) }}
 	<h3 class="header">#{{data["original_post"]["post_id"]}}: {{data["original_post"]["subject"]}}
-	<span class="post-id"><a onclick=AddReplyLink(this,"form"); name="{{data["original_post"]["post_id"]}}" data-text="&gt;&gt;{{data["original_post"]["post_id"]}}"><i class="fa fa-share"><span class="counter"></span></i></a></span></h3>
+	    <span class="post-id">
+            <a onclick=AddReplyLink(this,"form"); name="{{data["original_post"]["post_id"]}}" data-text="&gt;&gt;{{data["original_post"]["post_id"]}}">
+                <i class="fa fa-share">
+                    <span class="counter"></span>
+                </i>
+            </a>
+        </span>
+    </h3>
 	{% autoescape false %}
 	<p class="paragraph">{{data["original_post"]["body"]}}</p>
 	{% endautoescape %}
@@ -53,13 +59,12 @@
 <article class="post clear" id="{{reply["post_id"]}}">
     {% if "image_id" in reply: %}
     <div>
-    {{reply["image_id"]}}
     {{ macro.put_multimedia(reply) }}
     </div>
     {% endif %}
     <h3 class="header">#{{reply["post_id"]}}
         <span class="post-id">
-            <a onclick=AddReplyLink(this,"form"); name="{{reply["post_id"]}}" data-text="&gt;&gt;{{reply["post_id"]}}">
+            <a onclick=AddReplyLink(this,"form"); data-text="&gt;&gt;{{reply["post_id"]}}">
                 <i class="fa fa-share">
                     <span class="counter"></span>
                 </i>
@@ -91,32 +96,6 @@
 </div>
 
 <script>
-window.onload = function (){
-    MiniLightbox(".image");
-
-    var frames = document.getElementsByTagName('iframe');
-    for (var i=0; i<frames.length; i++){
-        if($(frames[i]).attr("data-source")!==undefined) {
-            frames[i].src = $(frames[i]).attr("data-source");
-            setTimeout("",500);
-        }
-    }
-};
-
-function OpenFrame(element){
-        //$(element).backgroundImage = ""
-        $(element).html("<iframe width='480' height='360' src='https://www.youtube.com/embed/"+ $(element).attr('data-id') +"?autoplay=1' frameborder='0' allowfullscreen></iframe>")
-    };
-
-$("a[data-text]").click(function(){
-  var value = $("#body").val();
-   $("#body").val(value+$(this).attr("data-text"));
-   var url = location.href;
-   location.href = "#body";
-   history.replaceState(null,null,url);
-   return false;}
-);
-
 $(":file").filestyle({size: "sm"});
 </script>
 </body>

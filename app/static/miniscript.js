@@ -38,3 +38,22 @@ function AddReplyLink(reply,formName)
     location.href = "#body";
     history.replaceState(null,null,url);
 }
+
+function OpenFrame(element)
+{
+    //$(element).backgroundImage = ""
+    $(element).html("<iframe width='480' height='360' src='https://www.youtube.com/embed/"+ $(element).attr('data-id') +"?autoplay=1' frameborder='0' allowfullscreen></iframe>")
+};
+
+window.onload = function ()
+{
+    MiniLightbox(".image");
+
+    var frames = document.getElementsByTagName('iframe');
+    for (var i=0; i<frames.length; i++){
+        if($(frames[i]).attr("data-source")!==undefined) {
+            frames[i].src = $(frames[i]).attr("data-source");
+            setTimeout("",500);
+        }
+    }
+};

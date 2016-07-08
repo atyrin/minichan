@@ -7,12 +7,12 @@
 	<link rel="shortcut icon" href="static/favicon.png" type="image/png">
 	<meta charset="utf-8" />
 	<link rel="stylesheet" href="../static/font-awesome-4.6.3/css/font-awesome.min.css" />
-	<link rel="stylesheet" href="static/ministyle.css" />
-    <script src="static/miniscript.js"></script>
+	<link rel="stylesheet" href="../static/ministyle.css" />
+    <script src="../static/miniscript.js"></script>
 
     <script type="text/javascript" src="../static/jquery-1.12.4.js"></script>
     <link rel="stylesheet" href="../static/bootstrap-3.3.6-dist/css/bootstrap.min.css">
-    <script src="../static/bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../static/bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../static/bootstrap-filestyle-1.2.1/bootstrap-filestyle.js"></script>
 
 </head>
@@ -42,8 +42,8 @@
 	{% if thread["content_type"] == "video/webm": %}
 	<video src="/thumb/{{thread["image_id"]}}" class="video" preload="metadata" controls></video>
 	{% else: %}
-	<a href="{{thread["post_id"]}}" target="_blank">
-	<img src="/thumb/{{thread["image_id"]}}" class="image">
+	<a href="{{thread["post_id"]}}">
+		<img src="/thumb/{{thread["image_id"]}}" class="image">
 	</a>
 	{% endif %}	
 	<h3 class="header"><a href="/{{thread["post_id"]}}">#{{thread["post_id"]}}: {{thread["subject"]}}</a>
