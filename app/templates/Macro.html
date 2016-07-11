@@ -1,13 +1,13 @@
 {% macro put_multimedia(post) %}
 	{% if post["content_type"] == "video/webm": %}
-	<video src="/thumb/{{post["image_id"]}}" class="video" preload="metadata" controls></video>
+	<video src="/thumb/{{post["image_id"]}}" class="video" preload="none" controls></video>
 	{% else: %}
 	<img src="/thumb/{{post["image_id"]}}" class="image">
 	{% endif %}
 {%- endmacro %}
 
 {% macro markup_buttons() %}
-	<script src="static/MarkupButtons.js"></script>
+	<script src="../static/miniscript.js"></script>
 	<div class="button-group clear">
 		<button type="button" class="markup-button" title="Spoiler" data-markup-tag="spoiler" onclick="AddMarkup(this,'body')"><span class="spoiler">S</span></button>
 		<button type="button" class="markup-button" title="Strong"  data-markup-tag="strong" onclick="AddMarkup(this,'body')"><span class="strong">S</span></button>

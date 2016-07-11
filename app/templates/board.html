@@ -6,30 +6,41 @@
 	<title>Veeamchan</title>
 	<link rel="shortcut icon" href="static/favicon.png" type="image/png">
 	<meta charset="utf-8" />
-	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
-	<link rel="stylesheet" href="static/ministyle.css" />
+	<link rel="stylesheet" href="../static/font-awesome-4.6.3/css/font-awesome.min.css" />
+	<link rel="stylesheet" href="../static/ministyle.css" />
+    <script src="../static/miniscript.js"></script>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="https://cdn.rawgit.com/markusslima/bootstrap-filestyle/master/src/bootstrap-filestyle.js"></script>
-
+    <script type="text/javascript" src="../static/jquery-1.12.4.js"></script>
+    <link rel="stylesheet" href="../static/bootstrap-3.3.6-dist/css/bootstrap.min.css">
+    <script type="text/javascript" src="../static/bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../static/bootstrap-filestyle-1.2.1/bootstrap-filestyle.js"></script>
 
 </head>
 <body>
 <!--Здарова, а чего в исходники полез? Сдеанонить кого решил?-->
 <center><h3>Добро пожаловать. Снова.</h3></center>
-</br>
-<center><a onclick="window.scrollTo(0,document.body.scrollHeight);return false;" href="#">New thread</a></center>
-</br>
+<br>
+<center><a id="newThread" class="linksbutton" onclick=ShowForm("form");>New thread</a></center>
+<form action="/" method="post" enctype="multipart/form-data" id="form" style="display: none">
+	<input type="text" name="subject" class="input-subject" maxlength="20" />
+	<textarea type="text" rows="6" name="body" id="body" placeholder="Ваше сообщение. Максимальная длина 1000." maxlength="1000" required></textarea>
+	{{ macro.markup_buttons() }}
+	<div class="button-group clear">
+		<div class="file-input-wrapper">
+			<input type="file" name="file" class="filestyle" accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|images/*, .webm" required>
+        </div>
+		<button type="submit" class="submit-button">Create thread</button>
+	</div>
+</form>
+<br>
 {% if data: %}
-{% for thread in data %}
+{% for thread in data: %}
 <article class="post clear">
 	{% if thread["content_type"] == "video/webm": %}
 	<video src="/thumb/{{thread["image_id"]}}" class="video" preload="metadata" controls></video>
 	{% else: %}
-	<a href="{{thread["post_id"]}}" target="_blank">
-	<img src="/thumb/{{thread["image_id"]}}" class="image">
+	<a href="{{thread["post_id"]}}">
+		<img src="/thumb/{{thread["image_id"]}}" class="image">
 	</a>
 	{% endif %}	
 	<h3 class="header"><a href="/{{thread["post_id"]}}">#{{thread["post_id"]}}: {{thread["subject"]}}</a>
@@ -40,18 +51,6 @@
 </article>
 {% endfor %}
 {% endif %}
-<center>Треад</center>
-<form action="/" method="post" enctype="multipart/form-data" id="form">
-	<input type="text" name="subject" class="input-subject" maxlength="20" />
-	<textarea type="text" rows="6" name="body" id="body" placeholder="место для псто" maxlength="1000" required></textarea>
-	{{ macro.markup_buttons() }}
-	<div class="button-group clear">
-		<div class="file-input-wrapper">
-			<input type="file" name="file" class="filestyle" accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|images/*, .webm" required>
-        </div>
-		<button type="submit" class="submit-button">Create thread</button>
-	</div>
-</form>
 </body>
 <script>$(":file").filestyle();</script>
 </html>
