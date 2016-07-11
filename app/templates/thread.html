@@ -26,7 +26,7 @@
 </div>
 <center><a id="newPost" class="linksbutton" onclick=ShowForm("form");>New post</a></center>
 <form action="/{{data["original_post"]["post_id"]}}" method="post" enctype="multipart/form-data" id="form" style="display: none">
-	<textarea type="text" rows="6" name="body" id="body" maxlength="1000" required></textarea>
+	<textarea type="text" rows="6" name="body" id="body" placeholder="Ваше сообщение. Максимальная длина 1000." maxlength="1000" required></textarea>
 	{{ macro.markup_buttons() }}
 	<div class="button-group clear">
 		<div class="file-input-wrapper">

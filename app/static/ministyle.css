@@ -132,7 +132,7 @@ textarea:focus {
 }
 .image {
 	width: 100%;
-
+	display: inline-block;
 }
 .paragraph {
 	margin: 0;
@@ -359,6 +359,7 @@ div.ml_box.animated {
 .youtube-tumb{
 	height: 360px;
 	width: 480px;
+	display: inline-block;
 }
 
 .yamusic-track{

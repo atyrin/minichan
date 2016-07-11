@@ -23,7 +23,7 @@
 <center><a id="newThread" class="linksbutton" onclick=ShowForm("form");>New thread</a></center>
 <form action="/" method="post" enctype="multipart/form-data" id="form" style="display: none">
 	<input type="text" name="subject" class="input-subject" maxlength="20" />
-	<textarea type="text" rows="6" name="body" id="body" placeholder="место для псто" maxlength="1000" required></textarea>
+	<textarea type="text" rows="6" name="body" id="body" placeholder="Ваше сообщение. Максимальная длина 1000." maxlength="1000" required></textarea>
 	{{ macro.markup_buttons() }}
 	<div class="button-group clear">
 		<div class="file-input-wrapper">
@@ -35,9 +35,6 @@
 <br>
 {% if data: %}
 {% for thread in data: %}
-{#% for i in range(5): %#}
-{#% print(data) %#}
-{#% set thread = next(data) %#}
 <article class="post clear">
 	{% if thread["content_type"] == "video/webm": %}
 	<video src="/thumb/{{thread["image_id"]}}" class="video" preload="metadata" controls></video>
