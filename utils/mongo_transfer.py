@@ -3,17 +3,16 @@
 
 from pymongo import MongoClient
 
-db_address = "localhost"
-port = 27017
-use_db = "local"
+from app import MONGO_HOST, MONGO_PORT, MONGO_DATABASE_NAME
+
 source = "images"
 target = "fs"
 
 
 class Transfer:
     def __init__(self):
-        self.address = db_address
-        self.port = port
+        self.address = MONGO_HOST
+        self.port = MONGO_PORT
 
     def connect(self):
         self.db = MongoClient(self.address, self.port)
@@ -26,7 +25,7 @@ class Transfer:
         return col
 
     def get_collection(self, col_name):
-        return self.db[self.usedb].get_collection(col_name)
+        return self.db[MONGO_DATABASE_NAME].get_collection(col_name)
 
     def __copy_chunk(self, source, target):
         self.source_col = self.get_collection(source + ".chunks")
