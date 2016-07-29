@@ -34,7 +34,7 @@ class Reply(Post):
     @queryset_manager
     def all(doc_cls, queryset):
         return queryset.order_by('post_id').only('post_id', 'creation_time',
-                                                 'body', 'image_id', 'content_type')
+                                                 'body', 'image_id', 'content_type', 'subject')
 
 
 class Image(Document):

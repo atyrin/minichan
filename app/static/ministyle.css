@@ -360,6 +360,8 @@ div.ml_box.animated {
 	height: 360px;
 	width: 480px;
 	display: inline-block;
+	border: dashed;
+	border-color: #a94442;
 }
 
 .yamusic-track{

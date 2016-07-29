@@ -41,9 +41,10 @@ function AddReplyLink(reply,formName)
 
 function OpenFrame(element)
 {
-    //$(element).backgroundImage = ""
+    element.style.border = "hidden";
     $(element).html("<iframe width='480' height='360' src='https://www.youtube.com/embed/"+ $(element).attr('data-id') +"?autoplay=1' frameborder='0' allowfullscreen></iframe>")
-};
+
+}
 
 window.onload = function ()
 {
