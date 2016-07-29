@@ -10,6 +10,7 @@ from flask import request, redirect, render_template, make_response
 from app import minichan
 from app import model
 from app import config
+from app import embeded_content
 
 
 @minichan.route('/', methods=['GET', 'POST'])
@@ -39,12 +40,12 @@ def thread(thread_id):
     if request.method == 'POST':
         original_post = model.Thread.objects(post_id=thread_id)[0]
         original_post.update(inc__bump_counter=1)
+        reply = model.Reply()
         if original_post.bump_counter >= config.BUMP_LIMIT:
             original_post.update(set__bump_limit=True)
+            reply.subject = "bump limit was overloaded"
         else:
             original_post.update(set__bump_time=time())
-
-        reply = model.Reply()
         reply.post_id = next_counter()
         reply.creation_time = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
         reply.body = html.escape(request.form['body'])
@@ -129,42 +130,9 @@ def convert_text_to_span_class(text, class_name):
 
 
 def format_links(text):
-    text = youtube_embed(text)
-    text = yandex_music(text)
+    text = embeded_content.youtube_embed(text)
+    text = embeded_content.yandex_music(text)
     return re.sub(r"\[link\](.*?)\[/link\]", r'<a href="\1">\1</a>', text)
-
-
-def youtube_embed(text):
-    youtube_links = re.findall(r"(\[link\].*?youtu.*?be.*?\[/link\])", text)
-    if youtube_links:
-        for link in youtube_links:
-            try:
-                video_id = re.findall(r"((?<=(v|V)/)|(?<=be/)|(?<=(\?|\&)v=)|(?<=embed/))([\w-]+)", link)[-1][-1]
-                #frame = "<iframe width='560' height='315' data-source='https://www.youtube.com/embed/{0}' frameborder='0' allowfullscreen></iframe>".format(video_id)
-                frame = "<div onclick=OpenFrame(this); class='youtube-tumb' data-id='{0}' style='background-image:url(http://img.youtube.com/vi/{0}/hqdefault.jpg)'></div>".format(video_id)
-                text = text.replace(link, frame)
-            except:
-                print("Failed to take video_id:", sys.exc_info()[0])
-    return text
-
-
-def yandex_music(text):
-    ya_music_links = re.findall(r"(\[link\].*?music.yandex.ru/album/.*?\[/link\])", text)
-    if ya_music_links:
-        for link in ya_music_links:
-            try:
-                album_id = re.findall(r"/album/(\d*)", link)[0]
-                if "track" in link:
-                    track_id = re.findall(r"/track/(\d*)", link)[0]
-                    frame = "<iframe class=yamusic-track frameborder='0' width='400' height='100' data-source='https://music.yandex.ru/iframe/#track/{0}/{1}/'></iframe>".format(
-                        track_id, album_id)
-                    text = text.replace(link, frame)
-                else:
-                    frame = "<iframe class=yamusic-album frameborder='0' width='300' height='600' data-source='https://music.yandex.ru/iframe/#album/{0}/'></iframe>".format(album_id)
-                    text = text.replace(link, frame)
-            except:
-                print("Failed to take yandex music track:", sys.exc_info()[0])
-    return text
 
 
 def format_text(text, span_classes):

@@ -62,7 +62,7 @@
     {{ macro.put_multimedia(reply) }}
     </div>
     {% endif %}
-    <h3 class="header">#{{reply["post_id"]}}
+    <h3 class="header">#{{reply["post_id"]}} {{reply["subject"]}}
         <span class="post-id">
             <a onclick=AddReplyLink(this,"form"); data-text="&gt;&gt;{{reply["post_id"]}}">
                 <i class="fa fa-share">
