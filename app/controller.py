@@ -109,6 +109,8 @@ def upload_multimedia(post_request, post: model.Post):
             elif file_extension == "webm":
                 print("It's webm")
                 post_attachment.img_src.put(photo, content_type='video/webm')
+                thumbnail = thumbnail_generator.create_video_thumbnail(photo)
+                post_attachment.img_thumbnail_src.put(thumbnail, content_type='image/jpeg')
                 print("put done")
             else:
                 print("Other extension: ", file_extension)
