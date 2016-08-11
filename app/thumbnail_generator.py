@@ -9,7 +9,7 @@ from werkzeug.datastructures import FileStorage
 
 def create_video_thumbnail(video_src):
     video_src.seek(0)
-    p = Popen(["ffmpeg", "-i", "-", "-vframes", "1", "-f", "singlejpeg", "-"],
+    p = Popen(["ffmpeg", "-i", "-", "-vframes", "1", "-vf", "scale=500:281",  "-f", "singlejpeg", "-"],
               stdin=video_src, stdout=PIPE)
     file_storage = FileStorage(stream=p.stdout, filename="thumbnail.jpg", content_type="image/jpeg",
                                name="file")
