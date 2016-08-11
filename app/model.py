@@ -41,6 +41,7 @@ class Image(Document):
     img_id = StringField(required=True)
     img_src = FileField(required=True)
     post_link = ReferenceField(Post, reverse_delete_rule=CASCADE, required=True)
+    img_thumbnail_src = FileField(required=False)
 
 
 class Counter(Document):

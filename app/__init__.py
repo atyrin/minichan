@@ -11,4 +11,4 @@ Counter(name='post_counter').save()
 
 minichan = Flask(__name__)
 
-import app.view
+import app.controller
