@@ -1,16 +1,18 @@
-from pymongo import MongoClient
 import sys
 
-db_address = "localhost"
-port = 27017
-use_db = "local"
-collection = "post"
+from pymongo import MongoClient
 
+#from app import MONGO_HOST, MONGO_DATABASE_NAME, MONGO_PORT
+#temp changes
+
+MONGO_HOST = "localhost"
+MONGO_PORT = 27017
+MONGO_DATABASE_NAME = "local"
 
 class Deleter:
     def __init__(self):
-        self.connection = MongoClient('localhost', 27017)
-        self.db = self.connection["local"]
+        self.connection = MongoClient(MONGO_HOST, MONGO_PORT)
+        self.db = self.connection[MONGO_DATABASE_NAME]
         self.posts = self.db.get_collection("post")
         self.image = self.db.get_collection("image")
         self.files = self.db.get_collection("fs.files")

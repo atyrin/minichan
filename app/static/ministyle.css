@@ -13,11 +13,17 @@ a {
 	font-weight:bold;
 }
 
+.linksbutton {
+    cursor: pointer;
+    font-size: 1.4em;
+}
+
 .navigation {
     top: 0;
 	margin: 1em;
     font-size: large;
     position: fixed;
+    cursor: pointer
 }
 
 .bottom-navigation {
@@ -25,6 +31,7 @@ a {
     font-size: large;
     position: fixed;
     bottom: 0;
+    cursor: pointer;
 }
 
 form {
@@ -125,7 +132,7 @@ textarea:focus {
 }
 .image {
 	width: 100%;
-
+	display: inline-block;
 }
 .paragraph {
 	margin: 0;
@@ -141,6 +148,7 @@ textarea:focus {
 }
 .post-id {
 	float: right;
+	cursor: pointer
 }
 .footer {
 	margin: 0;
@@ -346,4 +354,24 @@ div.ml_box.animated {
 	float: left;
 	width:100%;
 	max-width:500px;
+}
+
+.youtube-tumb{
+	height: 360px;
+	width: 480px;
+	display: inline-block;
+	border: dashed;
+	border-color: #a94442;
+}
+
+.yamusic-track{
+    border:none;
+    width:400px;
+    height:100px;
+}
+
+.yamusic-album{
+    border:none;
+    width:300px;
+    height:600px;
 }

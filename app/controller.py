@@ -4,13 +4,15 @@ import sys
 from datetime import datetime
 from time import time
 
+import re
 from flask import request, redirect, render_template, make_response
 
-from app import config
 from app import minichan
 from app import model
 from app.text_formatter import format_text
 from app import thumbnail_generator
+from app import config
+from app import embeded_content
 
 
 @minichan.route('/', methods=['GET', 'POST'])
@@ -40,12 +42,12 @@ def thread(thread_id):
     if request.method == 'POST':
         original_post = model.Thread.objects(post_id=thread_id)[0]
         original_post.update(inc__bump_counter=1)
+        reply = model.Reply()
         if original_post.bump_counter >= config.BUMP_LIMIT:
             original_post.update(set__bump_limit=True)
+            reply.subject = "bump limit was overloaded"
         else:
             original_post.update(set__bump_time=time())
-
-        reply = model.Reply()
         reply.post_id = next_counter()
         reply.creation_time = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
         reply.body = html.escape(request.form['body'])
@@ -62,7 +64,9 @@ def thread(thread_id):
             "reply_list": [dict(reply.to_mongo()) for reply in
                            model.Reply.all(thread_link=model.Thread.objects(post_id=thread_id)[0])]
         }
-        return render_template('thread.html', data=data)
+        response = make_response(render_template('thread.html', data=data))
+        response.headers["X-Frame-Options"] = "ALLOW-FROM youtube.com"
+        return response
 
 
 @minichan.route('/<img_type>/<img_id>', methods=['GET'])
@@ -132,3 +136,22 @@ def upload_multimedia(post_request, post: model.Post):
 def next_counter():
     model.Counter.objects(name='post_counter').update_one(inc__next_id=1)
     return model.Counter.objects[0].next_id
+
+
+def convert_text_to_span_class(text, class_name):
+    text = text.replace(("[" + class_name + "]"), "<span class=\"" + class_name + "\">")
+    text = text.replace(("[/" + class_name + "]"), "</span>")  # TO DO:Replace with regex
+    return text
+
+
+def format_links(text):
+    text = embeded_content.youtube_embed(text)
+    text = embeded_content.yandex_music(text)
+    return re.sub(r"\[link\](.*?)\[/link\]", r'<a target="_blank" href="\1">\1</a>', text)
+
+
+def format_text(text, span_classes):
+    for SpanClass in span_classes:
+        text = convert_text_to_span_class(text, SpanClass)
+    text = format_links(text)
+    return text
