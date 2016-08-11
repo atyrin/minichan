@@ -132,7 +132,7 @@ def convert_text_to_span_class(text, class_name):
 def format_links(text):
     text = embeded_content.youtube_embed(text)
     text = embeded_content.yandex_music(text)
-    return re.sub(r"\[link\](.*?)\[/link\]", r'<a href="\1">\1</a>', text)
+    return re.sub(r"\[link\](.*?)\[/link\]", r'<a target="_blank" href="\1">\1</a>', text)
 
 
 def format_text(text, span_classes):
