@@ -2,12 +2,10 @@ import sys
 
 from pymongo import MongoClient
 
-#from app import MONGO_HOST, MONGO_DATABASE_NAME, MONGO_PORT
-#temp changes
-
 MONGO_HOST = "localhost"
 MONGO_PORT = 27017
 MONGO_DATABASE_NAME = "local"
+
 
 class Deleter:
     def __init__(self):
