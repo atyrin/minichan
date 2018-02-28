@@ -106,3 +106,7 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 
+/ui/public/bundle.js
+/ui/package-lock.json
+/ui/node_modules/
+/app/static/bundle.js

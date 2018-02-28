@@ -6,6 +6,8 @@ from time import time
 
 import re
 from flask import request, redirect, render_template, make_response
+from flask_restful import Resource, Api
+from flask.views import MethodView
 
 from app import minichan
 from app import model
@@ -13,6 +15,32 @@ from app.text_formatter import format_text
 from app import thumbnail_generator
 from app import config
 from app import embeded_content
+
+api = Api(minichan)
+
+@minichan.route('/new', methods=['GET'])
+def newui():
+    return render_template('threadlist.html'), 200
+
+
+class ThreadListAPI(MethodView):
+    def get(self):
+        return model.Thread.api, 200, {"X-Frame-Options": "ALLOW-FROM youtube.com"}
+    def post(self):
+        pass
+
+class PostListAPI(MethodView):
+    def get(self, thread_id):
+        result = [dict(model.Thread.objects(post_id=thread_id).exclude('id')[0].to_mongo())]
+        result+=[dict(reply.to_mongo()) for reply in
+                           model.Reply.api(thread_link=model.Thread.objects(post_id=thread_id)[0])]
+        return result, 200, {"X-Frame-Options": "ALLOW-FROM youtube.com"} #for youtube support
+
+    def post(self):
+        pass
+
+api.add_resource(ThreadListAPI, '/api/threads')
+api.add_resource(PostListAPI, '/api/thread/<string:thread_id>')
 
 
 @minichan.route('/', methods=['GET', 'POST'])
@@ -35,6 +63,7 @@ def board():
         return redirect('/')
     else:
         return render_template('board.html', data=model.Thread.all)
+
 
 
 @minichan.route('/<thread_id>', methods=['GET', 'POST'])
@@ -69,28 +98,22 @@ def thread(thread_id):
         return response
 
 
-@minichan.route('/<img_type>/<img_id>', methods=['GET'])
-def image(img_type, img_id):
-    if img_type == 'img':
-        image = model.Image.objects(img_id=img_id).first()
-        myimage = image.img_src.read()
-        response = make_response(myimage)
-        response.headers['Content-Type'] = 'image/jpeg'
-        return response
-    elif img_type == 'thumb':
-        image = model.Image.objects(img_id=img_id).first()
-        myimage = image.img_thumbnail_src.read()
-        if myimage is None:
-            myimage = image.img_src.read()
-        response = make_response(myimage)
-        response.headers['Content-Type'] = 'image/jpeg'
-        return response
-    else:
-        image = model.Image.objects(img_id=img_id).first()
-        myimage = image.img_src.read()
-        response = make_response(myimage)
-        response.headers['Content-Type'] = image.img_src.content_type
-        return response
+
+@minichan.route('/img/<img_id>', methods=['GET'])
+def image(img_id):
+    image = model.Image.objects(img_id=img_id).first()
+    myimage = image.img_src.read()
+    response = make_response(myimage)
+    response.headers['Content-Type'] = 'image/jpeg'
+    return response
+
+@minichan.route('/thumb/<img_id>', methods=['GET'])
+def imagethumb(img_id):
+    image = model.Image.objects(img_id=img_id).first()
+    myimage = image.img_src.read()
+    response = make_response(myimage)
+    response.headers['Content-Type'] = 'image/jpeg'
+    return response
 
 
 @minichan.errorhandler(500)

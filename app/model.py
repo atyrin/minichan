@@ -1,4 +1,5 @@
 from mongoengine import *
+import simplejson as json
 
 
 class Post(Document):
@@ -27,6 +28,14 @@ class Thread(Post):
     def oldest(doc_cls, queryset):
         return queryset.order_by('bump_time')[0]
 
+    @queryset_manager
+    def api(doc_cls, queryset):
+        return [dict(x.to_mongo()) for x in queryset.order_by('-bump_time').only('image_id','post_id', 'creation_time',
+                                                                                 'body', 'subject',
+                                                                                 'bump_time', 'bump_counter',
+                                                                                 'bump_limit', 'content_type').exclude('id')]
+
+
 
 class Reply(Post):
     thread_link = ReferenceField(Thread, reverse_delete_rule=CASCADE, required=True)
@@ -35,6 +44,11 @@ class Reply(Post):
     def all(doc_cls, queryset):
         return queryset.order_by('post_id').only('post_id', 'creation_time',
                                                  'body', 'image_id', 'content_type', 'subject')
+
+    @queryset_manager
+    def api(doc_cls, queryset):
+        return queryset.order_by('post_id').only('post_id', 'creation_time',
+                                                 'body', 'image_id', 'content_type', 'subject').exclude('id')
 
 
 class Image(Document):
