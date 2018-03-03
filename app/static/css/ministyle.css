@@ -1,0 +1,68 @@
+.container img {
+    cursor: -webkit-zoom-in;
+    cursor: zoom-in;
+}
+
+.animated {
+    -webkit-animation-duration: 0.5s;
+    animation-duration: 0.5s;
+}
+
+.spoiler {
+    color: black;
+    background-color: black;
+}
+
+.spoiler:hover {
+    color: white;
+}
+
+.strong {
+    font-weight: bold;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.strikethrough {
+    text-decoration: line-through;
+}
+
+.underline {
+    text-decoration: underline;
+}
+
+.highlight {
+    background-color: yellow;
+}
+
+.video {
+    float: left;
+    width: 100%;
+    max-width: 500px;
+}
+
+.youtube-tumb {
+    height: 360px;
+    width: 480px;
+    display: inline-block;
+    border: dashed;
+    border-color: #a94442;
+}
+
+.yamusic-track {
+    border: none;
+    width: 400px;
+    height: 100px;
+}
+
+.yamusic-album {
+    border: none;
+    width: 300px;
+    height: 600px;
+}
+
+.videoThumbnail {
+    border: 1px dashed;
+}

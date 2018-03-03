@@ -13,7 +13,7 @@ def create_video_thumbnail(video_src):
               stdin=video_src, stdout=PIPE)
     file_storage = FileStorage(stream=p.stdout, filename="thumbnail.jpg", content_type="image/jpeg",
                                name="file")
-    p.stdout.seek(0)
+    # p.stdout.seek(0)
     return file_storage
 
 def create_image_thumbnail(img_src):

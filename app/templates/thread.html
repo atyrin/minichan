@@ -20,12 +20,13 @@
 <!--Здарова, а чего в исходники полез? Сдеанонить кого решил?-->
 <center><h3>Вимач. Ит джаст воркс.</h3></center>
 <div class="navigation">
-<a href="../">На главную</a>
+    <a href="../old">На главную</a>
 <br>
 <a onclick=ScrollBottom();>Вниз</a>
 </div>
 <center><a id="newPost" class="linksbutton" onclick=ShowForm("form");>New post</a></center>
-<form action="/{{data["original_post"]["post_id"]}}" method="post" enctype="multipart/form-data" id="form" style="display: none">
+<form action="/old/{{ data["original_post"]["post_id"] }}" method="post" enctype="multipart/form-data" id="form"
+      style="display: none">
 	<textarea type="text" rows="6" name="body" id="body" placeholder="Ваше сообщение. Максимальная длина 1000." maxlength="1000" required></textarea>
 	{{ macro.markup_buttons() }}
 	<div class="button-group clear">
@@ -77,7 +78,7 @@
                 {% for word in string.split(" "): %}
                     {% set NormalizedWord = word | replace ("&gt;&gt;",">>")%}
                     {% if NormalizedWord.startswith(">>") and NormalizedWord[2:].isdigit:%}
-                        <a href="/{{data["original_post"]["post_id"]}}#{{NormalizedWord[2:]}}">&gt;&gt;{{NormalizedWord[2:]}} </a>
+                        <a href="/old/{{ data["original_post"]["post_id"] }}#{{ NormalizedWord[2:] }}">&gt;&gt;{{ NormalizedWord[2:] }} </a>
                     {% else: %}
                         {{word + " "}}
                     {% endif %}

@@ -17,20 +17,29 @@ class Threads extends Component {
         this.state.data.map((element, index) => {
             result.push(
                 <ListGroupItem>
-                    {element.image_id ?
+                    {
+                        element.image_id ?
                         <Media.Left align="top">
-                            <img width={200} src={"/thumb/" + element.image_id} alt="thumbnail"/>
+                            <a target="_blank" href={"/img/" + element.image_id}>
+                                {
+                                    element.content_type === "video/webm" ?
+                                        <img width={200} class="videoThumbnail" src={"/thumb/" + element.image_id}
+                                             alt="video"/> :
+                                        <img width={200} src={"/thumb/" + element.image_id} alt="image"/>
+                                }
+                            </a>
                         </Media.Left> :
                         <div/>
                     }
                     <Media.Body>
                         <Media.Heading>
-                            <Link to={"/thread/" + element.post_id}>{element.creation_time}</Link>
-                            {" " + element.subject + " "}
-                            {" Post count: " + element.bump_counter}
+                            <Link to={"/thread/" + element.post_id}>
+                                {element.creation_time + " " + element.subject + " #" + element.post_id}
+                            </Link>
+                            {" Count: " + element.bump_counter}
                         </Media.Heading>
                         <p>
-                            {element.body}
+                            <div dangerouslySetInnerHTML={{__html: element.body}}/>
                         </p>
                     </Media.Body>
                 </ListGroupItem>
@@ -59,7 +68,7 @@ class Threads extends Component {
                 <h1 style={styles.welcome}>
                     Добро пожаловать. Снова.
                 </h1>
-                <InputForm/>
+                <InputForm page={"main"}/>
                 <ListGroup>
                     {threads}
                 </ListGroup>

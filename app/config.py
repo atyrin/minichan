@@ -1,4 +1,4 @@
-NUMBER_OF_THREADS = 30
+NUMBER_OF_THREADS = 50
 BUMP_LIMIT = 60
 SPAN_CLASSES = ["spoiler", "strong", "italic", "strikethrough", "underline",
                 "highlight"]  # For links see FormatLinks func. Syntax is [link][/link]

@@ -9,7 +9,7 @@ from flask import request, redirect, render_template, make_response
 from flask_restful import Resource, Api, reqparse
 from flask.views import MethodView
 
-import werkzeug
+from werkzeug.datastructures import FileStorage
 
 from app import minichan
 from app import model
@@ -20,11 +20,12 @@ from app import embeded_content
 
 api = Api(minichan)
 parser = reqparse.RequestParser()
+parser.add_argument('subject')
 parser.add_argument('body')
-parser.add_argument('file', type=werkzeug.FileStorage, location='files')
+parser.add_argument('file', type=FileStorage, location="files")
 
 
-@minichan.route('/new', methods=['GET'])
+@minichan.route('/', methods=['GET'])
 def newui():
     return render_template('threadlist.html'), 200
 
@@ -35,12 +36,11 @@ class ThreadListAPI(MethodView):
 
     def post(self):
         args = parser.parse_args()
-
         print(args)
-
-        api_create_thread("temp subj", args["body"], args['file'])
-
-        return redirect("/new")
+        api_create_thread(args["subject"], args["body"], args['file'])
+        if model.Thread.objects.count() >= config.NUMBER_OF_THREADS:
+            model.Thread.oldest.delete()
+        return redirect("/")
 
 
 class PostListAPI(MethodView):
@@ -50,8 +50,12 @@ class PostListAPI(MethodView):
                    model.Reply.api(thread_link=model.Thread.objects(post_id=thread_id)[0])]
         return result, 200, {"X-Frame-Options": "ALLOW-FROM youtube.com"}  # for youtube support
 
-    def post(self):
-        pass
+    def post(self, thread_id):
+        args = parser.parse_args()
+        print(args)
+        api_create_reply(thread_id, args["body"], args['file'])
+
+        return redirect("/#/thread/{0}".format(thread_id))
 
 
 api.add_resource(ThreadListAPI, '/api/threads')
@@ -62,13 +66,44 @@ def api_create_thread(subject, body, file):
     try:
         thread = model.Thread()
         thread.post_id = next_counter()
-        thread.body = body
+        thread.body = format_text(body, config.SPAN_CLASSES)
         thread.subject = subject
         thread.bump_time = time()
         thread.creation_time = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
         thread.save()
 
         api_upload_multimedia(file, thread)
+    except Exception as inst:
+        print(type(inst))  # the exception instance
+        print(inst.args)  # arguments stored in .args
+        print(inst)
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+
+
+def api_create_reply(thread_id, body, file):
+    try:
+        original_post = model.Thread.objects(post_id=thread_id)[0]
+        original_post.update(inc__bump_counter=1)
+        reply = model.Reply()
+        if original_post.bump_counter >= config.BUMP_LIMIT:
+            original_post.update(set__bump_limit=True)
+            reply.subject = "bump limit was overloaded"
+        else:
+            original_post.update(set__bump_time=time())
+        reply.post_id = next_counter()
+        reply.creation_time = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
+        reply.body = format_text(body, config.SPAN_CLASSES)
+        reply.thread_link = original_post
+        reply.save()
+
+        api_upload_multimedia(file, reply)
+
+        return redirect('/{0}'.format(thread_id))
+    except Exception as inst:
+        print(type(inst))  # the exception instance
+        print(inst.args)  # arguments stored in .args
+        print(inst)
     except:
         print("Unexpected error:", sys.exc_info()[0])
 
@@ -80,7 +115,7 @@ def api_upload_multimedia(file, post: model.Post):
             print("Content type = ", file.content_type)
             print("mimetype = ", file.mimetype)
             file_extension = file.filename.rsplit('.', 1)[-1]
-            print("type: " + file_extension)
+            print("File extension: " + file_extension)
             post_attachment = model.Image(post_link=post)
             if file_extension == "gif":
                 print("It's GIF")
@@ -88,21 +123,25 @@ def api_upload_multimedia(file, post: model.Post):
             elif file_extension == "webm":
                 print("It's webm")
                 post_attachment.img_src.put(file.stream, content_type='video/webm')
+                print("generate thumbnail")
                 thumbnail = thumbnail_generator.create_video_thumbnail(file.stream)
+                print("attach to post")
                 post_attachment.img_thumbnail_src.put(thumbnail, content_type='image/jpeg')
-            else:
+            elif file_extension in ["jpg", "png", "jpeg", "gif", "bmp", "tif", "tiff"]:
                 print("Other extension: ", file_extension)
                 post_attachment.img_src.put(file.stream, content_type=file.mimetype)
                 thumbnail = thumbnail_generator.create_image_thumbnail(file.stream)
                 post_attachment.img_thumbnail_src.put(thumbnail, content_type='image/jpeg')
-
-                print("Other extension:", post_attachment.img_src.content_type)
             print("Put done. Update thread")
 
             post_attachment.img_id = str(hashlib.md5(post_attachment.img_src.read()).hexdigest())
             post_attachment.save()
             post.update(set__content_type=post_attachment.img_src.content_type)
             post.update(set__image_id=post_attachment.img_id)
+    except Exception as inst:
+        print(type(inst))  # the exception instance
+        print(inst.args)  # arguments stored in .args
+        print(inst)
     except:
         print("Unexpected error:", sys.exc_info()[0])
 
@@ -112,14 +151,16 @@ def image(img_id):
     image = model.Image.objects(img_id=img_id).first()
     myimage = image.img_src.read()
     response = make_response(myimage)
-    response.headers['Content-Type'] = 'image/jpeg'
+    response.headers['Content-Type'] = image.img_src.content_type
     return response
 
 
 @minichan.route('/thumb/<img_id>', methods=['GET'])
 def imagethumb(img_id):
     image = model.Image.objects(img_id=img_id).first()
-    myimage = image.img_src.read()
+    myimage = image.img_thumbnail_src.read()
+    if myimage is None:
+        myimage = image.img_src.read()
     response = make_response(myimage)
     response.headers['Content-Type'] = 'image/jpeg'
     return response
@@ -135,28 +176,9 @@ def next_counter():
     return model.Counter.objects[0].next_id
 
 
-def convert_text_to_span_class(text, class_name):
-    text = text.replace(("[" + class_name + "]"), "<span class=\"" + class_name + "\">")
-    text = text.replace(("[/" + class_name + "]"), "</span>")  # TO DO:Replace with regex
-    return text
-
-
-def format_links(text):
-    text = embeded_content.youtube_embed(text)
-    text = embeded_content.yandex_music(text)
-    return re.sub(r"\[link\](.*?)\[/link\]", r'<a target="_blank" href="\1">\1</a>', text)
-
-
-def format_text(text, span_classes):
-    for SpanClass in span_classes:
-        text = convert_text_to_span_class(text, SpanClass)
-    text = format_links(text)
-    return text
-
-
 # deprecated
 
-@minichan.route('/', methods=['GET', 'POST'])
+@minichan.route('/old', methods=['GET', 'POST'])
 def board():
     if request.method == 'POST':
         if model.Thread.objects.count() >= config.NUMBER_OF_THREADS:
@@ -178,7 +200,7 @@ def board():
         return render_template('board.html', data=model.Thread.all)
 
 
-@minichan.route('/<thread_id>', methods=['GET', 'POST'])
+@minichan.route('/old/<thread_id>', methods=['GET', 'POST'])
 def thread(thread_id):
     if request.method == 'POST':
         original_post = model.Thread.objects(post_id=thread_id)[0]

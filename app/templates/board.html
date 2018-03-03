@@ -20,7 +20,7 @@
 <center><h3>Добро пожаловать. Снова.</h3></center>
 <br>
 <center><a id="newThread" class="linksbutton" onclick=ShowForm("form");>New thread</a></center>
-<form action="/" method="post" enctype="multipart/form-data" id="form" style="display: none">
+<form action="/old" method="post" enctype="multipart/form-data" id="form" style="display: none">
 	<input type="text" name="subject" class="input-subject" maxlength="20" />
 	<textarea type="text" rows="6" name="body" id="body" placeholder="Ваше сообщение. Максимальная длина 1000." maxlength="1000" required></textarea>
 	{{ macro.markup_buttons() }}
@@ -38,12 +38,13 @@
 	{% if thread["content_type"] == "video/webm": %}
 	<video src="/img/{{thread["image_id"]}}" class="video" preload="none" poster="/thumb/{{thread["image_id"]}}" controls></video>
 	{% else: %}
-	<a href="{{thread["post_id"]}}">
+        <a href="/old/{{ thread["post_id"] }}">
 		<img src="/thumb/{{thread["image_id"]}}" class="image">
 	</a>
-	{% endif %}	
-	<h3 class="header"><a href="/{{thread["post_id"]}}">#{{thread["post_id"]}}: {{thread["subject"]}}</a>
-	<span class="post-id"><a href="{{thread["post_id"]}}"><span class="counter">{{thread["bump_counter"]}} </span><i class="fa fa-comment"></i></a></span></h3>
+	{% endif %}
+    <h3 class="header"><a href="/old/{{ thread["post_id"] }}">#{{ thread["post_id"] }}: {{ thread["subject"] }}</a>
+        <span class="post-id"><a href="/old/{{ thread["post_id"] }}"><span
+                class="counter">{{ thread["bump_counter"] }} </span><i class="fa fa-comment"></i></a></span></h3>
 	{% autoescape false %}
 	<p class="paragraph">{{thread["body"]}}</p>
 	{% endautoescape %}
