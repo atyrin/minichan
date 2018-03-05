@@ -38,7 +38,6 @@
 }
 
 .video {
-    float: left;
     width: 100%;
     max-width: 500px;
 }
@@ -47,7 +46,7 @@
     height: 360px;
     width: 480px;
     display: inline-block;
-    border: dashed;
+    border: 1px dashed;
     border-color: #a94442;
 }
 
@@ -65,4 +64,12 @@
 
 .videoThumbnail {
     border: 1px dashed;
+}
+
+.reply {
+    font-style: italic;
+    font-weight: bold;
+    text-decoration-color: #e55c38;
+!important;
+    text-decoration: underline;
 }

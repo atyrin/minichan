@@ -20,14 +20,14 @@ class Threads extends Component {
                     {
                         element.image_id ?
                         <Media.Left align="top">
-                            <a target="_blank" href={"/img/" + element.image_id}>
+                            <Link to={"/thread/" + element.post_id}>
                                 {
                                     element.content_type === "video/webm" ?
                                         <img width={200} class="videoThumbnail" src={"/thumb/" + element.image_id}
                                              alt="video"/> :
                                         <img width={200} src={"/thumb/" + element.image_id} alt="image"/>
                                 }
-                            </a>
+                            </Link>
                         </Media.Left> :
                         <div/>
                     }

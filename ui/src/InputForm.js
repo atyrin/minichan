@@ -31,7 +31,7 @@ class InputForm extends Component {
         let textVal = this.refs.myTextarea;
         let selectionStart = textVal.selectionStart;
         let selectionEnd = textVal.selectionEnd;
-        var newVal = this.state.text.substring(0, selectionStart) + type1 +
+        let newVal = this.state.text.substring(0, selectionStart) + type1 +
             this.state.text.substring(selectionStart, selectionEnd) + type2 +
             this.state.text.substring(selectionEnd);
         this.setState({text: newVal})
