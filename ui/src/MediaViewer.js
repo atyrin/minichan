@@ -4,7 +4,6 @@ import {Modal, Button} from 'react-bootstrap';
 class MediaViewer extends Component {
     constructor(props) {
         super(props);
-        //this.state = {show:this.props.show}
     }
 
     handleClose() {

@@ -13,6 +13,11 @@ class Threads extends Component {
     }
 
     parser(json) {
+        const styles = {
+            bumpCounter: {
+                float: "right"
+            }
+        }
         var result = [];
         this.state.data.map((element, index) => {
             result.push(
@@ -36,7 +41,9 @@ class Threads extends Component {
                             <Link to={"/thread/" + element.post_id}>
                                 {element.creation_time + " " + element.subject + " #" + element.post_id}
                             </Link>
-                            {" Count: " + element.bump_counter}
+                            <div style={styles.bumpCounter}>
+                                {" Count: " + element.bump_counter}
+                            </div>
                         </Media.Heading>
                         <p>
                             <div dangerouslySetInnerHTML={{__html: element.body}}/>
@@ -65,9 +72,9 @@ class Threads extends Component {
         }
         return (
             <div>
-                <h1 style={styles.welcome}>
+                <h2 style={styles.welcome}>
                     Добро пожаловать. Снова.
-                </h1>
+                </h2>
                 <InputForm page={"main"}/>
                 <ListGroup>
                     {threads}

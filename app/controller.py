@@ -58,8 +58,16 @@ class PostListAPI(MethodView):
         return redirect("/#/thread/{0}".format(thread_id))
 
 
+class PostAPI(MethodView):
+    def get(self, post_id):
+        result = model.Post.objects(post_id=post_id).exclude('id', 'thread_link')[0].to_mongo();
+        print(result)
+        return result, 200, {"X-Frame-Options": "ALLOW-FROM youtube.com"}  # for youtube support
+
+
 api.add_resource(ThreadListAPI, '/api/threads')
 api.add_resource(PostListAPI, '/api/thread/<string:thread_id>')
+api.add_resource(PostAPI, '/api/post/<string:post_id>')
 
 
 def api_create_thread(subject, body, file):
