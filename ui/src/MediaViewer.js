@@ -4,20 +4,25 @@ import {Modal, Button} from 'react-bootstrap';
 class MediaViewer extends Component {
     constructor(props) {
         super(props);
+        this.zoomer = this.zoomer.bind(this);
+        this.state = {modal: 868}
     }
 
-    handleClose() {
-        this.props.handleClose()
+    zoomer(e) {
+
     }
 
 
     render() {
         const styles = {
             imageStyle: {
-                width: "100%"
+                maxWidth: "100%",
+                display: "block",
+                marginLeft: "auto",
+                marginRight: "auto",
             },
             videoStyle: {
-                width: "100%"
+                maxWidth: "100%"
             }
         };
         return (
@@ -26,31 +31,25 @@ class MediaViewer extends Component {
                 onHide={this.props.handleClose}
                 bsSize="large"
             >
-                <Modal.Header closeButton>
-                    <Modal.Title>
-                        MediaContent
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
+                <Modal.Body
+                    id={"myModal"}
+                >
                     {
                         this.props.contentType === "video" ?
                             <video
-                                src={"/img/" + this.props.contentUrl}
-                                preload="none"
-                                poster={"/thumb/" + this.props.contentUrl}
-                                style={styles.videoStyle}
+                                style={styles.imageStyle}
                                 controls
-                                autoplay>
+                                autoplay="autoplay"
+                            >
+                                <source src={"/img/" + this.props.contentUrl} type='video/webm; codecs="vp8, vorbis"'/>
                             </video> :
                             <img
+                                onWheel={this.zoomer}
                                 src={"/img/" + this.props.contentUrl}
                                 style={styles.imageStyle}
                                 alt="image"/>
                     }
                 </Modal.Body>
-                <Modal.Footer>
-                    <Button onClick={this.props.handleClose}>Close</Button>
-                </Modal.Footer>
             </Modal>
         )
     }
