@@ -16,7 +16,7 @@ from app import model
 from app.text_formatter import format_text
 from app import thumbnail_generator
 from app import config
-from app import embeded_content
+from app import moderate
 
 api = Api(minichan)
 parser = reqparse.RequestParser()
@@ -65,9 +65,16 @@ class PostAPI(MethodView):
         return result, 200, {"X-Frame-Options": "ALLOW-FROM youtube.com"}  # for youtube support
 
 
+class ModerateAPI(MethodView):
+    def delete(self, post_id):
+        mocha = moderate.Deleter()
+        mocha.delete_post(post_id)
+
+
 api.add_resource(ThreadListAPI, '/api/threads')
 api.add_resource(PostListAPI, '/api/thread/<string:thread_id>')
 api.add_resource(PostAPI, '/api/post/<string:post_id>')
+api.add_resource(ModerateAPI, '/api/moderate/<string:post_id>')
 
 
 def api_create_thread(subject, body, file):
@@ -82,8 +89,7 @@ def api_create_thread(subject, body, file):
 
         api_upload_multimedia(file, thread)
     except Exception as inst:
-        print(type(inst))  # the exception instance
-        print(inst.args)  # arguments stored in .args
+        print("Exception type: {}, args: {}".format(type(inst), inst.args))
         print(inst)
     except:
         print("Unexpected error:", sys.exc_info()[0])
@@ -119,9 +125,8 @@ def api_create_reply(thread_id, body, file):
 def api_upload_multimedia(file, post: model.Post):
     try:
         if file:
-            print("Filename = ", file.filename)
-            print("Content type = ", file.content_type)
-            print("mimetype = ", file.mimetype)
+            print("Filename = {}, Content type = {}, mimetype = {}"
+                  .format(file.filename, file.content_type, file.mimetype))
             file_extension = file.filename.rsplit('.', 1)[-1]
             print("File extension: " + file_extension)
             post_attachment = model.Image(post_link=post)

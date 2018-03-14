@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Popover, ListGroupItem, Media, OverlayTrigger, ProgressBar, Button} from 'react-bootstrap';
 import ReplyPopoverContent from "./ReplyPopoverContent"
+import Rules from "./Rules";
 
 class ThreadItem extends Component {
     constructor(props) {
@@ -48,7 +49,7 @@ class ThreadItem extends Component {
         var threadView = <ListGroupItem><ProgressBar active now={45}/></ListGroupItem>
         if (element) {
             //console.log(element)
-            threadView =
+            return (<div>
                 <ListGroupItem id={element.post_id}>
                     {element.image_id ?
                         <Media.Left align="top">
@@ -78,10 +79,17 @@ class ThreadItem extends Component {
                         </div>
                     </Media.Body>
                 </ListGroupItem>
+                <Rules/>
+            </div>)
         }
-        return (
-            threadView
-        )
+        else {
+            return (
+                <div>
+                    <ProgressBar active now={45}/>
+                    <Rules/>
+                </div>
+            )
+        }
     }
 }
 

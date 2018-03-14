@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {ListGroup, ListGroupItem, Media} from 'react-bootstrap';
 import {Link} from "react-router-dom";
 import InputForm from "./InputForm"
+import Rules from "./Rules";
 
 class Threads extends Component {
     constructor(props) {
@@ -79,6 +80,8 @@ class Threads extends Component {
                 <ListGroup>
                     {threads}
                 </ListGroup>
+                <Rules/>
+                <Link to={"/about"}>About</Link>
             </div>
         );
     }
