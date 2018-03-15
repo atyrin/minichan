@@ -60,9 +60,14 @@ class PostListAPI(MethodView):
 
 class PostAPI(MethodView):
     def get(self, post_id):
-        result = model.Post.objects(post_id=post_id).exclude('id', 'thread_link')[0].to_mongo();
-        print(result)
-        return result, 200, {"X-Frame-Options": "ALLOW-FROM youtube.com"}  # for youtube support
+        posts = model.Post.objects(post_id=post_id).exclude('id', 'thread_link')
+        if len(posts) != 0:
+            print(posts)
+            result = posts[0].to_mongo();
+            print(result)
+            return result, 200, {"X-Frame-Options": "ALLOW-FROM youtube.com"}  # for youtube support
+        else:
+            return None, 400
 
 
 class ModerateAPI(MethodView):

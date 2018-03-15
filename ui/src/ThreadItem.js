@@ -11,6 +11,7 @@ class ThreadItem extends Component {
     }
 
     replyClick() {
+        document.getElementById("inputPanel").scrollIntoView()
         alert("Пока не работает")
     }
 
@@ -22,15 +23,16 @@ class ThreadItem extends Component {
             result =
                 <OverlayTrigger
                     container={this.refs.dest}
+                    containerPadding={20}
                     trigger="hover"
                     placement="bottom"
                     overlay={
-                        <Popover style={{maxWidth: "70%"}} title="Reply to">
+                        <Popover style={{maxWidth: "70%"}}>
                             <ReplyPopoverContent replies={arrayMatches}/>
                         </Popover>
                     }
                 >
-                    <div ref={"dest"} style={{width: "80%"}} dangerouslySetInnerHTML={{__html: text}}/>
+                    <div style={{width: "80%"}} dangerouslySetInnerHTML={{__html: text}}/>
                 </OverlayTrigger>
         }
         else {
@@ -44,7 +46,7 @@ class ThreadItem extends Component {
             replyBtn: {
                 float: "right"
             }
-        }
+        };
         var element = this.props.element;
         var threadView = <ListGroupItem><ProgressBar active now={45}/></ListGroupItem>
         if (element) {
@@ -68,7 +70,7 @@ class ThreadItem extends Component {
                         <div/>
                     }
                     <Media.Body>
-                        <Media.Heading>
+                        <Media.Heading ref={"dest"}>
                             {element.creation_time + " #" + element.post_id}
                             <Button bsStyle="link" style={styles.replyBtn} onClick={this.replyClick}>
                                 Reply

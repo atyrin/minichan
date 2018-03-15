@@ -17,7 +17,7 @@ def format_links(text):
 def format_reply(text):
     return re.sub(">>(\d*)",
                   lambda
-                      m: '<span class=\"reply\" href=#{1} onClick=document.getElementById(\"{1}\").scrollIntoView() data-target=\"{1}\">{0}</span>'.format(
+                      m: '<a class=\"reply\" onClick=document.getElementById(\"{1}\").scrollIntoView() data-target=\"{1}\">{0}</a>'.format(
                       m.group(0), m.group(1)),
                   text)
 

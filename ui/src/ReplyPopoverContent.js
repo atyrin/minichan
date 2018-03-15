@@ -6,16 +6,11 @@ class ReplyPopoverContent extends Component {
     constructor(props) {
         super(props);
         this.state = {data: []};
-        this.mediaClick = this.mediaClick.bind(this);
     }
 
     componentDidMount() {
         console.log("Mount ReplyPopover");
-        setTimeout(this.loadReplies(), 1000);
-    }
-
-    mediaClick() {
-        console.log("Non permit view content from popover");
+        this.loadReplies();
     }
 
     loadReplies() {
@@ -27,7 +22,11 @@ class ReplyPopoverContent extends Component {
                 fetch("/api/post/" + reply.substring(2))
                     .then((response) => response.json())
                     .then(element => {
-                        this.state.data.push(<ThreadItem element={element} mediaClick={this.mediaClick}/>)
+                        this.state.data.push(
+                            <div>
+                                <strong>{reply}</strong>
+                                <div style={{width: "80%"}} dangerouslySetInnerHTML={{__html: element.body}}/>
+                            </div>)
                     })
             }
         )
@@ -35,7 +34,6 @@ class ReplyPopoverContent extends Component {
 
     render() {
         return (
-
             <ListGroup>
                 {this.state.data}
             </ListGroup>

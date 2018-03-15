@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {ListGroup, ListGroupItem, Media} from 'react-bootstrap';
+import {ListGroup, ListGroupItem, Media, Badge} from 'react-bootstrap';
 import {Link} from "react-router-dom";
 import InputForm from "./InputForm"
 import Rules from "./Rules";
@@ -42,9 +42,9 @@ class Threads extends Component {
                             <Link to={"/thread/" + element.post_id}>
                                 {element.creation_time + " " + element.subject + " #" + element.post_id}
                             </Link>
-                            <div style={styles.bumpCounter}>
+                            <Badge style={styles.bumpCounter}>
                                 {" Count: " + element.bump_counter}
-                            </div>
+                            </Badge>
                         </Media.Heading>
                         <p>
                             <div dangerouslySetInnerHTML={{__html: element.body}}/>

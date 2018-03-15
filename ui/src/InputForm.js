@@ -22,9 +22,10 @@ class InputForm extends Component {
         this.handleStrikethroughButton = this.handleStrikethroughButton.bind(this);
         this.handleHighlightButton = this.handleHighlightButton.bind(this);
         this.handleLinkButton = this.handleLinkButton.bind(this);
+        this.handlePanelToggle = this.handlePanelToggle.bind(this);
 
         this.handleStyleButton = this._handleStyleButton.bind(this);
-        this.state = {text: ""};
+        this.state = {text: "", open: false};
     }
 
     _handleStyleButton(type1, type2) {
@@ -67,6 +68,10 @@ class InputForm extends Component {
 
     handleTextChange(e) {
         this.setState({text: e.target.value});
+    }
+
+    handlePanelToggle() {
+        this.setState({open: !this.state.open})
     }
 
     render() {
@@ -126,9 +131,9 @@ class InputForm extends Component {
         }
 
         return (
-            <Panel style={styles.all} id="collapsible-panel-example-2">
+            <Panel id={"inputPanel"} style={styles.all} expanded={this.state.open}>
                 <Panel.Heading>
-                    <Panel.Title style={styles.header} toggle>
+                    <Panel.Title onClick={this.handlePanelToggle} style={styles.header}>
                         {locals.inputHeader}
                     </Panel.Title>
                 </Panel.Heading>
