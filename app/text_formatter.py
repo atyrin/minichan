@@ -26,5 +26,5 @@ def format_text(text, span_classes):
     for SpanClass in span_classes:
         text = convert_text_to_span_class(text, SpanClass)
     text = format_links(text)
-    text = format_reply(text)
+    # text = format_reply(text)
     return text
