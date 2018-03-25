@@ -2,43 +2,17 @@ import React, {Component} from 'react';
 import {Popover, ListGroupItem, Media, OverlayTrigger, ProgressBar, Button} from 'react-bootstrap';
 import ReplyPopoverContent from "./ReplyPopoverContent"
 import Rules from "./Rules";
+import PrettifyText from "./PrettifyText";
 
 class ThreadItem extends Component {
     constructor(props) {
         super(props);
-        this.highlightReplies = this.highlightReplies.bind(this);
         this.replyClick = this.replyClick.bind(this);
     }
 
     replyClick() {
         document.getElementById("inputPanel").scrollIntoView()
         alert("Пока не работает")
-    }
-
-    highlightReplies(text) {
-        var re = new RegExp('(>>\\d+)', 'gi');
-        var result;
-        var arrayMatches = text.match(re);
-        if (arrayMatches) {
-            result =
-                <OverlayTrigger
-                    container={this.refs.dest}
-                    containerPadding={20}
-                    trigger="hover"
-                    placement="bottom"
-                    overlay={
-                        <Popover style={{maxWidth: "70%"}}>
-                            <ReplyPopoverContent replies={arrayMatches}/>
-                        </Popover>
-                    }
-                >
-                    <div style={{width: "80%"}} dangerouslySetInnerHTML={{__html: text}}/>
-                </OverlayTrigger>
-        }
-        else {
-            result = <div style={{width: "80%"}} dangerouslySetInnerHTML={{__html: text}}/>
-        }
-        return result;
     }
 
     render() {
@@ -76,9 +50,7 @@ class ThreadItem extends Component {
                                 Reply
                             </Button>
                         </Media.Heading>
-                        <div>
-                            {this.highlightReplies(element.body)}
-                        </div>
+                        <PrettifyText text={element.body}/>
                     </Media.Body>
                 </ListGroupItem>
                 <Rules/>
