@@ -1,9 +1,9 @@
-VeeamChan
+VeeChan
 ========
 
 
 ### Tech
-Veeamchan uses a number of open source projects to work properly:
+Veechan uses a number of open source projects to work properly:
 * Python 3
 * [MongoDB](https://www.mongodb.com/)
 * [Flask](http://flask.pocoo.org/) - python web-framework based on Jinja2
